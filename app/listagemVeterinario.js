@@ -67,7 +67,7 @@ export default VeterinariosScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,               // igual ao PacientesScreen
+    flex: 1,               
     paddingBottom: 0,
   },
   vazio: {
