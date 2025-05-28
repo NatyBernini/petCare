@@ -26,20 +26,21 @@ Este é um aplicativo de autenticação simples feito com **React Native** usand
 
 ### Carregamento inicial dos dados salvos
 Logo quando o componente é montado (useEffect), ele tenta carregar os dados salvos anteriormente:
-useEffect(() => {
+```useEffect(() => {
   const carregarPacientes = async () => {
     const data = await AsyncStorage.getItem('pacientes');
     if (data) setPacientes(JSON.parse(data));
   };
   carregarPacientes();
 }, []);
+```
 AsyncStorage.getItem('pacientes'): busca os dados salvos sob a chave 'pacientes'.
 
 Se encontrar algo, ele converte de volta de JSON para objeto JavaScript e atualiza o estado com setPacientes.
 
 ### Salvando dados ao cadastrar um paciente
 Quando o usuário preenche o formulário e clica em "Cadastrar Paciente", a função handleCadastro é chamada:
-const handleCadastro = async () => {
+```const handleCadastro = async () => {
   if (!nome || !raca || !sexo || !idade || !pelagem || !nomeTutor || !endereco) {
     Alert.alert('Erro', 'Preencha todos os campos!');
     return;
@@ -50,6 +51,7 @@ const handleCadastro = async () => {
 
   setPacientes(listaAtualizada);
   await salvarPacientes(listaAtualizada);
+```
 
 - Cria um objeto novoPaciente com os dados do formulário.
 
@@ -67,7 +69,7 @@ const handleCadastro = async () => {
 
 ### Limpando os dados salvos
 Quando o usuário clica em "Limpar todos os pacientes", esta função é executada:
-const handleLimparPacientes = () => {
+```const handleLimparPacientes = () => {
   Alert.alert(
     'Confirmar exclusão',
     'Deseja realmente apagar todos os pacientes e consultas?',
@@ -85,6 +87,7 @@ const handleLimparPacientes = () => {
     ]
   );
 };
+```
 - Remove as chaves 'pacientes' e 'consultas' de forma permanente.
 
 - Limpa a lista de pacientes em memória (setPacientes([])).
