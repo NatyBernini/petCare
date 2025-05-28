@@ -108,7 +108,7 @@ export default function CadastroPacienteScreen() {
   <KeyboardAvoidingView
     style={{ flex: 1 }}
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    keyboardVerticalOffset={100} // ajuste se necessário
+    keyboardVerticalOffset={100}
   >
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.titulo}>Cadastro de Paciente (Animal)</Text>
