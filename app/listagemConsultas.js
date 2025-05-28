@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { FontAwesome } from '@expo/vector-icons'; // ícone de "play" ou "check"
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function ListagemConsultasScreen() {
   const [consultas, setConsultas] = useState([]);
@@ -54,7 +54,7 @@ export default function ListagemConsultasScreen() {
             paciente: item.paciente,
             data: item.data,
             veterinario: item.veterinario,
-            hora: item.hora, // passando hora para consulta, se necessário
+            hora: item.hora,
           })
         }
       >
@@ -123,16 +123,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 10,
-    alignSelf: 'center', // para centralizar horizontalmente
+    alignSelf: 'center',
   },
   botaoConteudo: {
-    flexDirection: 'row', // ícone e texto lado a lado
+    flexDirection: 'row', 
     alignItems: 'center',
   },
   botaoTexto: {
-    color: '#000', // cor do texto (mesma do ícone)
+    color: '#000', 
     fontSize: 18,
     fontWeight: '700',
-    marginLeft: 8, // espaço entre ícone e texto
+    marginLeft: 8,
   },
 });
