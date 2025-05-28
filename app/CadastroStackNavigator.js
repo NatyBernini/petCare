@@ -14,7 +14,6 @@ export default function CadastroStackNavigator() {
       <Stack.Screen
         name="CadastroHome"
         component={CadastroHomeScreen}
-        // options desnecessários sem header
       />
       <Stack.Screen
         name="CadastroPaciente"
