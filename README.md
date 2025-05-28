@@ -131,26 +131,6 @@ Neste projeto, foi utilizado o @react-native-async-storage/async-storage porque:
 
 - Boa escolha para persistência local leve.
 
-
-## 📸 Capturas de Tela
-
-**Android** | **IOS** | **WEB** | **Usuário Logado***
-:--:|:--:|:--:|:--:
-<img src="pet-care/assets/screens/android.png" width="200"/> | <img src="pet-care/assets/screens/ios.png" width="200"/> | <img src="pet-care/assets/screens/WEb.png" width="200"/> | <img src="pet-care/assets/screens/testeUsuarioLogado.png" width="200"/>
-
-**DDD inválido** | **Recuperar Senha** | **Email ou Senha Incorretos** | **Telefone Incorreto***
-:--:|:--:|:--:|:--:
-<img src="pet-care/assets/screens/testeDDDInvalido.png" width="200"/> | <img src="pet-care/assets/screens/testeSenhaRedefinidaSucesso.png" width="200"/> | <img src="pet-care/assets/screens/testeEmailSenhaIncorreta.png" width="200"/> | <img src="pet-care/assets/screens/testeRedefinirSenhaTelefoneIncorreto.png" width="200"/>
-
-**Registro com Sucesso** | **Senhas não Coincidem** | **Senha Fora do Padrão** | **Email fora do Padrão***
-:--:|:--:|:--:|:--:
-<img src="pet-care/assets/screens/registroSucesso.png" width="200"/> | <img src="pet-care/assets/screens/testeSenhasNaoCoincidem.png" width="200"/> | <img src="pet-care/assets/screens/testeSenhaForaPadrao.png" width="200"/> | <img src="pet-care/assets/screens/testeEmailForaPadrao.png" width="200"/>
-
-**Campos Obrigatórios** | **Usuário Não Encontrado** | **Senha Criptografada**
-:--:|:--:|:--:
-<img src="pet-care/assets/screens/testeCamposObrigatorios.png" width="200"/> | <img src="pet-care/assets/screens/testeUsuarioNaoEncontrado.png" width="200"/> | <img src="pet-care/assets/screens/senhaCriptografada.png" width="200"/> 
----
-
 ## 🛠 Instalação
 
 ### 1. Pré-requisitos
