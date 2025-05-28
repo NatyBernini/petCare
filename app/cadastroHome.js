@@ -6,7 +6,6 @@ export default function CadastroHomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
 
-      {/* Área da mensagem de boas-vindas */}
    <View style={styles.welcomeContainer}>
   <Text style={styles.welcomeText}>Bem-vindo ao PetCare</Text>
   <Image 
@@ -68,14 +67,13 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 40,
     flex: 1,
-    backgroundColor: 'rgb(254, 210, 108)', // cor de fundo geral (pode ajustar)
+    backgroundColor: 'rgb(254, 210, 108)',
   },
   welcomeContainer: {
-    height: 180, // maior altura para ocupar mais espaço
+    height: 180, 
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 30,
-    // fundo transparente para deixar a cor do container principal aparecer
   },
   welcomeText: {
     fontSize: 28,
@@ -109,9 +107,9 @@ buttonsContainer: {
     paddingBottom: 70, 
 },
 card: {
-  flexDirection: 'column',  // corrigido
-  alignItems: 'center',     // centraliza horizontalmente
-  justifyContent: 'center', // centraliza verticalmente
+  flexDirection: 'column',  
+  alignItems: 'center',     
+  justifyContent: 'center', 
   backgroundColor: '#fff',
   paddingVertical: 20,
   paddingHorizontal: 10,
@@ -139,7 +137,7 @@ card: {
   marginBottom: 20,
   paddingHorizontal: 10,
   fontWeight: '500',
-  width: '100%',   // <- Adicione isso
+  width: '100%',  
 },
 
 
