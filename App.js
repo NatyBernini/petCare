@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SHA256 from 'crypto-js/sha256';
 import { validateDDD } from 'validate-ddd-br';
 import TabNavigator from './app/components/TabNavigator';
+import * as Font from 'expo-font';
+
 const windowHeight = Dimensions.get('window').height;
 
 const hashPassword = (password) => SHA256(password).toString();
@@ -40,7 +42,18 @@ function AuthScreen({ navigation }) {
   const [recoveryPassword, setRecoveryPassword] = useState('');
   const [recoveryConfirmPassword, setRecoveryConfirmPassword] = useState('');
 
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+
   useEffect(() => {
+      const loadFonts = async () => {
+      await Font.loadAsync({
+        'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
+        'Poppins-Bold': require('./assets/fonts/Poppins-Bold.ttf'),
+      });
+      setFontsLoaded(true);
+    };
+    loadFonts();
     const loadUsers = async () => {
       const data = await AsyncStorage.getItem('users');
       if (data) setUsers(JSON.parse(data));
@@ -88,19 +101,24 @@ function AuthScreen({ navigation }) {
       return;
     }
 
-    if (isLogin) {
-      const user = users.find(u => u.email === email);
-      if (!user) {
-        setMessage('Usuário não encontrado.');
-        return;
-      }
-      if (!comparePassword(password, user.password)) {
-        setMessage('Senha incorreta.');
-        return;
-      }
-      setMessage('');
-      navigation.navigate('Home');
-    } else {
+   if (isLogin) {
+  const user = users.find(u => u.email === email);
+  if (!user) {
+    setMessage('Usuário não encontrado.');
+    return;
+  }
+  if (!comparePassword(password, user.password)) {
+    setMessage('Senha incorreta.');
+    return;
+  }
+
+  setMessage('');
+  navigation.reset({
+    index: 0,
+    routes: [{ name: 'Home' }],
+  });
+}
+ else {
       if (users.find(u => u.email === email)) {
         setMessage('Usuário já existe.');
         return;
@@ -449,12 +467,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' },
-  input: { borderBottomWidth: 1, marginBottom: 20, padding: 10 },
-  toggle: { marginTop: 10, color: '#007bff', textAlign: 'center' },
-  forgotPassword: { marginTop: 10, color: 'tomato', textAlign: 'center' },
-  message: { marginTop: 20, color: 'green', fontWeight: 'bold', textAlign: 'center' },
-  backToHome: { marginTop: 15, color: '#007bff', textAlign: 'center', fontWeight: 'bold' },
+  title: {fontFamily: 'Poppins-Regular', fontSize: 24, marginBottom: 20, textAlign: 'center' },
+  input: {fontFamily: 'Poppins-Regular', borderBottomWidth: 1, marginBottom: 20, padding: 10 },
+  toggle: { fontFamily: 'Poppins-Regular',marginTop: 10, color: '#007bff', textAlign: 'center' },
+  forgotPassword: {fontFamily: 'Poppins-Regular', marginTop: 10, color: 'tomato', textAlign: 'center' },
+  message: { fontFamily: 'Poppins-Regular',marginTop: 20, color: 'green', fontWeight: 'bold', textAlign: 'center' },
+  backToHome: {    fontFamily: 'Poppins-Regular', marginTop: 15, color: '#007bff', textAlign: 'center', fontWeight: 'bold' },
   background: {
     flex: 1,
     resizeMode: 'cover',
@@ -467,10 +485,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 10,
+     fontFamily: 'Poppins-Bold'
   },
   authButtonText: {
     color: '#fff',
-    fontWeight: 'bold',
     fontSize: 16,
+    fontFamily: 'Poppins-Regular'
   },
 });

@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-export default function PacienteDetalhes({ route }) {
+export default function VeterinarioDetalhes({ route }) {
+  const { veterinario } = route.params;
   const navigation = useNavigation();
-  const { paciente } = route.params;
 
   const [historicoConsultas, setHistoricoConsultas] = useState([]);
-  const [consultasAgendadas, setConsultasAgendadas] = useState([]);
+  const [agendaConsultas, setAgendaConsultas] = useState([]);
 
   const carregarConsultas = async () => {
     try {
@@ -19,22 +19,19 @@ export default function PacienteDetalhes({ route }) {
       const consultasRealizadas = consultasRealizadasJSON ? JSON.parse(consultasRealizadasJSON) : [];
       const consultasAgendadas = consultasAgendadasJSON ? JSON.parse(consultasAgendadasJSON) : [];
 
-      // Função para filtrar consultas pelo paciente atual
-      const filtrarPorPaciente = (consulta) => {
-        if (!consulta.paciente) return false;
-        if (typeof consulta.paciente === 'object' && consulta.paciente.nome) {
-          return consulta.paciente.nome.trim().toLowerCase() === paciente.nome.trim().toLowerCase();
+      const filtrarPorVeterinario = (consulta) => {
+        if (!consulta.veterinario) return false;
+        if (typeof consulta.veterinario === 'object' && consulta.veterinario.nome) {
+          return consulta.veterinario.nome.trim().toLowerCase() === veterinario.nome.trim().toLowerCase();
         }
-        if (typeof consulta.paciente === 'string') {
-          return consulta.paciente.trim().toLowerCase() === paciente.nome.trim().toLowerCase();
+        if (typeof consulta.veterinario === 'string') {
+          return consulta.veterinario.trim().toLowerCase() === veterinario.nome.trim().toLowerCase();
         }
         return false;
       };
 
-      // Filtrar histórico por paciente
-      const historicoFiltrado = consultasRealizadas.filter(filtrarPorPaciente);
+      const historicoFiltrado = consultasRealizadas.filter(filtrarPorVeterinario);
 
-      // Função para identificar se uma consulta agendada já foi realizada
       const consultaFoiRealizada = (consultaAgendada) => {
         return historicoFiltrado.some((consultaRealizada) => {
           const pacienteAgendado = typeof consultaAgendada.paciente === 'string' ? consultaAgendada.paciente : consultaAgendada.paciente?.nome || '';
@@ -43,18 +40,17 @@ export default function PacienteDetalhes({ route }) {
           return (
             consultaRealizada.data === consultaAgendada.data &&
             consultaRealizada.hora === consultaAgendada.hora &&
-            pacienteRealizado.trim().toLowerCase() === pacienteAgendado.trim().toLowerCase()
+            pacienteRealizado === pacienteAgendado
           );
         });
       };
 
-      // Filtrar agenda por paciente e excluir as consultas já realizadas
       const agendaFiltrada = consultasAgendadas
-        .filter(filtrarPorPaciente)
+        .filter(filtrarPorVeterinario)
         .filter(consulta => !consultaFoiRealizada(consulta));
 
       setHistoricoConsultas(historicoFiltrado);
-      setConsultasAgendadas(agendaFiltrada);
+      setAgendaConsultas(agendaFiltrada);
     } catch (error) {
       console.error('Erro ao carregar consultas:', error);
     }
@@ -63,45 +59,36 @@ export default function PacienteDetalhes({ route }) {
   useFocusEffect(
     useCallback(() => {
       carregarConsultas();
-    }, [paciente.nome])
+    }, [veterinario.nome])
   );
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-         {/* Botão Voltar */}
-      <TouchableOpacity style={styles.btnVoltar} onPress={() => navigation.goBack()}>
-        <FontAwesome5 name="arrow-left" size={18} color="#000" />
-        <Text style={styles.textoBtnVoltar}>Voltar</Text>
+      {/* Botão Voltar */}
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.botaoVoltar}>
+        <FontAwesome5 name="arrow-left" size={20} color="#333" />
+        <Text style={styles.textoVoltar}>Voltar</Text>
       </TouchableOpacity>
-      <Text style={styles.titulo}>Detalhes do Paciente</Text>
-   <View style={styles.cardDetalhes}>
-  <Text style={styles.label}>
-    <FontAwesome5 name="paw" /> Nome: <Text style={styles.valor}>{paciente.nome}</Text>
-  </Text>
-  <Text style={styles.label}>
-    Raça: <Text style={styles.valor}>{paciente.raca}</Text>
-  </Text>
-  <Text style={styles.label}>
-    Sexo: <Text style={styles.valor}>{paciente.sexo}</Text>
-  </Text>
-  <Text style={styles.label}>
-    Idade: <Text style={styles.valor}>{paciente.idade}</Text>
-  </Text>
-  <Text style={styles.label}>
-    Pelagem: <Text style={styles.valor}>{paciente.pelagem}</Text>
-  </Text>
-  <Text style={styles.label}>
-    Tutor: <Text style={styles.valor}>{paciente.nomeTutor}</Text>
-  </Text>
-  <Text style={styles.label}>
-    Endereço: <Text style={styles.valor}>{paciente.endereco}</Text>
-  </Text>
-</View>
 
-      {/* Histórico de Consultas */}
+      <Text style={styles.titulo}>Detalhes do Veterinário</Text>
+
+      <View style={styles.cardDetalhes}>
+        <Text style={styles.label}>
+          <FontAwesome5 name="user-md" /> Nome: <Text style={styles.valor}>{veterinario.nome}</Text>
+        </Text>
+        <Text style={styles.label}>
+          CRMV: <Text style={styles.valor}>{veterinario.crmv}</Text>
+        </Text>
+        <Text style={styles.label}>
+          Especialidade: <Text style={styles.valor}>{veterinario.especialidade}</Text>
+        </Text>
+      </View>
+
+      {/* Histórico */}
       <Text style={[styles.titulo, { marginTop: 30 }]}>Histórico de Consultas</Text>
+
       {historicoConsultas.length === 0 ? (
-        <Text style={styles.semConsulta}>Nenhuma consulta encontrada.</Text>
+        <Text style={styles.semConsulta}>Nenhuma consulta realizada encontrada.</Text>
       ) : (
         historicoConsultas.map((consulta, index) => (
           <View key={`hist-${index}`} style={styles.cardConsulta}>
@@ -112,11 +99,9 @@ export default function PacienteDetalhes({ route }) {
               <FontAwesome5 name="clock" /> Hora: {consulta.hora}
             </Text>
             <Text style={styles.cardText}>
-              <FontAwesome5 name="user-md" /> Veterinário: {typeof consulta.veterinario === 'string' ? consulta.veterinario : consulta.veterinario?.nome || ''}
+              <FontAwesome5 name="paw" /> Paciente: {typeof consulta.paciente === 'string' ? consulta.paciente : consulta.paciente?.nome || ''}
             </Text>
-            <Text style={styles.cardText}>
-              <FontAwesome5 name="notes-medical" /> Sintomas: {consulta.sintomas}
-            </Text>
+
             <TouchableOpacity
               style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}
               onPress={() => navigation.navigate('ConsultaDetalhes', { consulta })}
@@ -128,12 +113,13 @@ export default function PacienteDetalhes({ route }) {
         ))
       )}
 
-      {/* Consultas Agendadas */}
-      <Text style={[styles.titulo, { marginTop: 30 }]}>Consultas Agendadas</Text>
-      {consultasAgendadas.length === 0 ? (
+      {/* Agenda */}
+      <Text style={[styles.titulo, { marginTop: 30 }]}>Agenda de Consultas</Text>
+
+      {agendaConsultas.length === 0 ? (
         <Text style={styles.semConsulta}>Nenhuma consulta agendada.</Text>
       ) : (
-        consultasAgendadas.map((consulta, index) => (
+        agendaConsultas.map((consulta, index) => (
           <View key={`agenda-${index}`} style={styles.cardConsulta}>
             <Text style={styles.cardText}>
               <FontAwesome5 name="calendar" /> Data: {consulta.data}
@@ -142,8 +128,9 @@ export default function PacienteDetalhes({ route }) {
               <FontAwesome5 name="clock" /> Hora: {consulta.hora}
             </Text>
             <Text style={styles.cardText}>
-              <FontAwesome5 name="user-md" /> Veterinário: {typeof consulta.veterinario === 'string' ? consulta.veterinario : consulta.veterinario?.nome || ''}
+              <FontAwesome5 name="paw" /> Paciente: {typeof consulta.paciente === 'string' ? consulta.paciente : consulta.paciente?.nome || ''}
             </Text>
+
             <TouchableOpacity
               style={{ marginTop: 10, flexDirection: 'row', alignItems: 'center' }}
               onPress={() => navigation.navigate('ConsultaDetalhes', { consulta })}
@@ -164,6 +151,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9faff',
     paddingBottom: 100,
   },
+  botaoVoltar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  textoVoltar: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#333',
+    fontWeight: '500',
+  },
   titulo: {
     fontSize: 22,
     fontWeight: '700',
@@ -180,17 +178,6 @@ const styles = StyleSheet.create({
     fontWeight: 'normal',
     color: '#333',
   },
-    btnVoltar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  textoBtnVoltar: {
-    color: '#000',
-    fontSize: 16,
-    marginLeft: 8,
-    fontWeight: '600',
-  },
   cardConsulta: {
     backgroundColor: '#fff',
     padding: 15,
@@ -201,8 +188,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-      borderTopWidth: 2,
-    borderTopColor:'rgb(80, 80, 80)',
+    borderTopWidth: 2,
+    borderTopColor: 'rgb(80, 80, 80)',
     borderWidth: 2,
     borderColor: 'rgb(80, 80, 80)',
   },
@@ -217,29 +204,18 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   cardDetalhes: {
-  backgroundColor: '#ffffff',
-  padding: 20,
-  borderRadius: 12,
-  marginBottom: 30,
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
-  elevation: 3,
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
     borderTopWidth: 2,
-    borderTopColor:'rgb(80, 80, 80)',
+    borderTopColor: 'rgb(80, 80, 80)',
     borderWidth: 2,
     borderColor: 'rgb(80, 80, 80)',
-},
-label: {
-  fontSize: 15,
-  marginBottom: 10,
-  fontWeight: '600',
-  color: '#777',
-},
-valor: {
-  fontWeight: '600',
-  color: '#333',
-},
-
+  },
 });

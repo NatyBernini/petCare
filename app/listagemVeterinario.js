@@ -4,28 +4,27 @@ import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const PacientesScreen = () => {
-  const [pacientes, setPacientes] = useState([]);
+const VeterinariosScreen = () => {
+  const [veterinarios, setVeterinarios] = useState([]);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
-  // Recarrega a lista toda vez que a tela ficar ativa/focada
   useEffect(() => {
-    const carregarPacientes = async () => {
+    const carregarVeterinarios = async () => {
       try {
-        const data = await AsyncStorage.getItem('pacientes');
+        const data = await AsyncStorage.getItem('veterinarios');
         if (data) {
-          setPacientes(JSON.parse(data));
+          setVeterinarios(JSON.parse(data));
         } else {
-          setPacientes([]);
+          setVeterinarios([]);
         }
       } catch (error) {
-        console.error('Erro ao carregar pacientes:', error);
+        console.error('Erro ao carregar veterinários:', error);
       }
     };
 
     if (isFocused) {
-      carregarPacientes();
+      carregarVeterinarios();
     }
   }, [isFocused]);
 
@@ -34,10 +33,11 @@ const PacientesScreen = () => {
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <View>
           <Text style={styles.nome}>{item.nome}</Text>
-          <Text style={styles.tutor}>Tutor: {item.nomeTutor}</Text>
+          <Text style={styles.crmv}>CRMV: {item.crmv}</Text>
+          <Text style={styles.especialidade}>Especialidade: {item.especialidade}</Text>
         </View>
         <TouchableOpacity
-          onPress={() => navigation.navigate('PacienteDetalhes', { paciente: item })}
+          onPress={() => navigation.navigate('VeterinarioDetalhes', { veterinario: item })}
         >
           <Icon name="eye" size={24} color="#00593b" />
         </TouchableOpacity>
@@ -47,11 +47,11 @@ const PacientesScreen = () => {
 
   return (
     <View style={styles.container}>
-      {pacientes.length === 0 ? (
-        <Text style={styles.vazio}>Nenhum paciente cadastrado.</Text>
+      {veterinarios.length === 0 ? (
+        <Text style={styles.vazio}>Nenhum veterinário cadastrado.</Text>
       ) : (
         <FlatList
-          data={pacientes}
+          data={veterinarios}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderItem}
           horizontal={true}
@@ -63,11 +63,11 @@ const PacientesScreen = () => {
   );
 };
 
-export default PacientesScreen;
+export default VeterinariosScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1,               // igual ao PacientesScreen
     paddingBottom: 0,
   },
   vazio: {
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   listaHorizontal: {
-    paddingVertical: 10,
+    paddingVertical: 20,
     paddingHorizontal: 10,
   },
   card: {
@@ -90,17 +90,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 2,
-            borderTopWidth: 2,
-          borderTopColor:'rgb(80, 80, 80)',
-          borderWidth: 2,
-          borderColor: 'rgb(80, 80, 80)',
+    borderTopWidth: 2,
+    borderTopColor:'rgb(80, 80, 80)',
+    borderWidth: 2,
+    borderColor: 'rgb(80, 80, 80)',
   },
   nome: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 6,
   },
-  tutor: {
+  crmv: {
+    fontSize: 14,
+    color: '#555',
+  },
+  especialidade: {
     fontSize: 14,
     color: '#555',
   },
