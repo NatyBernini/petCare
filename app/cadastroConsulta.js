@@ -74,7 +74,7 @@ export default function CadastroConsultaScreen() {
       <KeyboardAvoidingView
     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     style={{ flex: 1 }}
-    keyboardVerticalOffset={80} // ajuste conforme a altura do seu header, se tiver
+    keyboardVerticalOffset={80}
   >
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.titulo}>Agendar Consulta</Text>
