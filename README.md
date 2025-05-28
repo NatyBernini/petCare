@@ -8,6 +8,7 @@ Este é um aplicativo de autenticação simples feito com **React Native** usand
 - Armazenamento local usando **AsyncStorage**.
 - Criptografia de senhas com **SHA-256** via `crypto-js`.
 - Validações de entrada (e-mail, senha forte, confirmação de senha e DDD brasileiro).
+- Cadastrar Paciente, Veterinário, Agendar Consulta e Realizar Consulta.
 
 - Link do Projeto no Expo Go: [projeto](https://snack.expo.dev/@ailatan/pet-care)
 
