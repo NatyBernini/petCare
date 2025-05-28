@@ -100,7 +100,37 @@ Quando o usuário clica em "Limpar todos os pacientes", esta função é executa
 | Salvar novo paciente      | `AsyncStorage.setItem()`    | Armazenamento local   |
 | Apagar todos os pacientes | `AsyncStorage.removeItem()` | Armazenamento local   |
 
+
+- Obs: o mesmo ciclo se aplica para as outras funcionalidades como cadastrar veterinários e realizar consultas.
 ---
+
+## 📦 Por que usar AsyncStorage em vez de expo-sqlite ou MMKV?
+| Tecnologia       | Ideal para...                                   | Prós                                       | Contras                                            |
+| ---------------- | ----------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
+| **AsyncStorage** | Dados simples e persistência básica             | Simples, compatível com Expo Go            | Lento para grandes volumes, não relacional         |
+| **Expo SQLite**  | Dados estruturados, relacionais e consultas SQL | Suporte a SQL, ideal para muitos dados     | Mais verboso, exige mais configuração e manutenção |
+| **MMKV**         | Armazenamento de alta performance (key-value)   | Extremamente rápido, persistência imediata | Não compatível com Expo Go (exige eject)           |
+
+✅ Quando usar cada um?
+| Caso de Uso                             | Melhor Opção             |
+| --------------------------------------- | ------------------------ |
+| Salvar token de autenticação            | `MMKV` ou `SecureStore`  |
+| Armazenar lista simples (ex: pacientes) | `AsyncStorage` ou `MMKV` |
+| Persistir grande volume de dados        | `SQLite`, `Realm`, etc.  |
+| App com busca, filtros, ordenações      | `SQLite`                 |
+| Configurações, flags, status do app     | `MMKV` ou `AsyncStorage` |
+
+🚀 Por que escolhemos AsyncStorage?
+Neste projeto, foi utilizado o @react-native-async-storage/async-storage porque:
+
+- A estrutura de dados é simples (lista de pacientes).
+
+- Não há necessidade de consultas complexas ou relacionamentos entre dados.
+
+- É fácil de implementar e compatível com o Expo Go (sem necessidade de eject).
+
+- Boa escolha para persistência local leve.
+
 
 ## 📸 Capturas de Tela
 
