@@ -34,9 +34,9 @@ Logo quando o componente é montado (useEffect), ele tenta carregar os dados sal
   carregarPacientes();
 }, []);
 ```
-AsyncStorage.getItem('pacientes'): busca os dados salvos sob a chave 'pacientes'.
+- AsyncStorage.getItem('pacientes'): busca os dados salvos sob a chave 'pacientes'.
 
-Se encontrar algo, ele converte de volta de JSON para objeto JavaScript e atualiza o estado com setPacientes.
+- Se encontrar algo, ele converte de volta de JSON para objeto JavaScript e atualiza o estado com setPacientes.
 
 ### Salvando dados ao cadastrar um paciente
 Quando o usuário preenche o formulário e clica em "Cadastrar Paciente", a função handleCadastro é chamada:
@@ -59,12 +59,13 @@ Quando o usuário preenche o formulário e clica em "Cadastrar Paciente", a fun�
 
 - Atualiza o estado local (setPacientes) e também salva essa lista no armazenamento com AsyncStorage.setItem por meio da função salvarPacientes:
 
-  const salvarPacientes = useCallback(
+ ``` const salvarPacientes = useCallback(
   async (listaAtualizada) => {
     await AsyncStorage.setItem('pacientes', JSON.stringify(listaAtualizada));
   },
   []
 );
+```
 ⚠️ É necessário serializar com JSON.stringify() porque AsyncStorage só salva strings.
 
 ### Limpando os dados salvos
