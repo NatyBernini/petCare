@@ -1,4 +1,4 @@
-# 📱 App de Autenticação com React Native (Expo)
+# 📱 App PetCare com React Native (Expo)
 
 Este é um aplicativo de autenticação simples feito com **React Native** usando **Expo**, que permite:
 
@@ -7,7 +7,8 @@ Este é um aplicativo de autenticação simples feito com **React Native** usand
 - Recuperação de senha com base no e-mail e telefone.
 - Armazenamento local usando **AsyncStorage**.
 - Criptografia de senhas com **SHA-256** via `crypto-js`.
-- Validações de entrada (e-mail, senha forte, confirmação de senha e DDD brasileiro).
+- Validações de entrada (e-mail, senha forte, confirmação de senha e DDD brasileiro).2
+- Cadastro de pacientes , veterinários e agendamento de consulta.
 
 - Link do Projeto no Expo Go: [projeto](https://snack.expo.dev/@ailatan/pet-care)
 
@@ -31,7 +32,7 @@ Utiliza AsyncStorage para armazenar dados localmente no dispositivo, garantindo 
 
 - Cadastro de veterinários.
 - Consulta de veterinários cadastrados com busca facilitada.
-- Atualização ou exclusão de registros de forma simples e persistente.
+- Remoção de veterinários de forma simples e persistente.
 
 
 
@@ -145,6 +146,7 @@ Além disso, destaca-se por sua simplicidade de uso.
 | **AsyncStorage** | Dados simples e persistência básica             | Simples, compatível com Expo Go            | Lento para grandes volumes, não relacional         |
 | **Expo SQLite**  | Dados estruturados, relacionais e consultas SQL | Suporte a SQL, ideal para muitos dados     | Mais verboso, exige mais configuração e manutenção |
 | **MMKV**         | Armazenamento de alta performance (key-value)   | Extremamente rápido, persistência imediata | Não compatível com Expo Go (exige eject)           |
+
 ✅ Quando usar cada um?
 | Caso de Uso                             | Melhor Opção             |
 | --------------------------------------- | ------------------------ |
