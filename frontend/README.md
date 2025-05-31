@@ -6,5 +6,8 @@ Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://
 
 # Importações
 ## Fonte Poppins
+- Instalação:
+npm install @fontsource/poppins
+
 - Para importar um peso específico: 
 import "@fontsource/poppins/700.css";

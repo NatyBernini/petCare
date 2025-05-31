@@ -10,8 +10,8 @@
   </v-container>
 </template>
 
-<script>
-export default {
+<script setup lang="ts">
+defineOptions({
   name: 'RelatorioCadastro',
-}
+})
 </script>

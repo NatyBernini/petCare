@@ -23,22 +23,22 @@
   </v-container>
 </template>
 
-<script>
-export default {
+<script setup lang="ts">
+import { ref } from 'vue'
+
+defineOptions({
   name: 'ConsultaList',
-  data() {
-    return {
-      headers: [
-        { text: 'Nome', value: 'nome' },
-        { text: 'Idade', value: 'idade' },
-        { text: 'Espécie', value: 'especie' },
-      ],
-      pacientes: [
-        { nome: 'Rex', idade: 5, especie: 'Cachorro' },
-        { nome: 'Mimi', idade: 3, especie: 'Gato' },
-        { nome: 'Lola', idade: 2, especie: 'Coelho' },
-      ],
-    }
-  },
-}
+})
+
+const headers = ref([
+  { text: 'Nome', value: 'nome' },
+  { text: 'Idade', value: 'idade' },
+  { text: 'Espécie', value: 'especie' },
+])
+
+const pacientes = ref([
+  { nome: 'Rex', idade: 5, especie: 'Cachorro' },
+  { nome: 'Mimi', idade: 3, especie: 'Gato' },
+  { nome: 'Lola', idade: 2, especie: 'Coelho' },
+])
 </script>

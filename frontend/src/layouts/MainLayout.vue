@@ -47,13 +47,13 @@
       </div>
     </v-navigation-drawer>
 
-    <v-app-bar app color="deep-purple" dark>
-      <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <v-toolbar-title>VetClinic Sistema</v-toolbar-title>
+    <v-app-bar app dark>
+      <v-toolbar-title>Natália Bernini 
+              <img src="../assets/icons/fotoPerfil.jpg" alt="Ícone" class="menu-user-icon" /></v-toolbar-title>
     </v-app-bar>
 
     <v-main>
-      <router-view />
+      <div class="container-conteudo"><router-view /></div>
     </v-main>
   </v-app>
 </template>
@@ -121,6 +121,17 @@ const menuItems = [
   font-family: 'Poppins', sans-serif !important;
 }
 
+.title-page {
+  font-size: 26px;
+  font-weight: 500;
+  color: #434343;
+}
+
+.container-conteudo {
+  padding: 30px;
+  padding-left: 80px;
+  padding-right: 80px;
+}
 .v-navigation-drawer {
   background: rgb(245, 245, 245) !important;
   border: none !important;
@@ -199,5 +210,39 @@ const menuItems = [
     color: #888;
     padding-bottom: 10px;
   }
+}
+
+.menu-user-icon {
+  width: 40px;
+  border-radius: 50%;
+}
+.v-toolbar {
+  box-shadow: none!important;
+  border-bottom: 1px solid #E8E8E8 !important;
+}
+.v-toolbar-title {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding-right: 20px;
+
+    .v-toolbar-title__placeholder {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+}
+
+.v-field__overlay {
+ background-color: unset!important; 
+}
+.v-field__field {
+     border: 1px solid #ABABAB!important;
+     border-radius: 10px;
+
+}
+.v-field__outline {
+  display: none!important;
 }
 </style>
