@@ -240,9 +240,28 @@ const menuItems = [
 .v-field__field {
      border: 1px solid #ABABAB!important;
      border-radius: 10px;
+    --v-input-control-height: 40px!important;
+    max-height: 40px;
 
+    input {
+      padding-top: 0!important;
+    }
 }
 .v-field__outline {
   display: none!important;
+}
+
+.v-input--density-default {
+    --v-input-padding-top: 7px!important;
+}
+.v-input--density-default .v-field--variant-filled .v-label.v-field-label--floating{
+    transform: translateY(-22px)!important;
+    font-size: 14px;
+    margin-inline-start: 10px;
+    background-color: #fff;
+    z-index: 10;
+    padding-right: 5px;
+    padding-left: 5px;
+    opacity: 1;
 }
 </style>

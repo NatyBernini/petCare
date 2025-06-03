@@ -17,14 +17,26 @@
                   <v-radio label="Doméstico" value="domestico"></v-radio>
                   <v-radio label="Resgatado" value="resgatado"></v-radio>
                 </v-radio-group>
-
-                <p>Espécie</p>
-                  <v-radio-group inline>
-                  <v-radio label="Can" value="especieCan"></v-radio>
-                  <v-radio label="Fel" value="especieFel"></v-radio>
-                  <v-radio label="Outra" value="especieOutra"></v-radio>
-                </v-radio-group>
-
+                
+                  <p>Espécie</p>
+                  <v-row>
+                    <v-col sm="12" md="12" lg="3" xl="3">
+                  <v-radio-group v-model="radio.Especie" inline>
+                    <v-radio label="Canina" value="especieCan"></v-radio>
+                    <v-radio label="Felina" value="especieFel"></v-radio>
+                    <v-radio label="Outra" value="especieOutra"></v-radio>
+                  </v-radio-group>
+                    </v-col>
+                    
+                  <v-col sm="12" md="12" lg="4" xl="3">
+                    <v-text-field v-if="radio.Especie === 'especieOutra'"
+                    v-model="outraEspecie.value.value"
+                    :error-messages="pelagem.errorMessage.value"
+                    label="Especificar Outra Espécie"
+                    max-width="300px"
+                  ></v-text-field>
+                  </v-col>
+                </v-row>
                 
                 <p>Informações Básicas</p>
                 <v-col>
@@ -38,9 +50,9 @@
                 ></v-text-field>
 
                 <v-text-field
-                v-model="phone.value.value"
+                v-model="idade.value.value"
                 :counter="7"
-                :error-messages="phone.errorMessage.value"
+                :error-messages="idade.errorMessage.value"
                 label="Idade"
                 max-width="150px"
                 ></v-text-field>
@@ -53,7 +65,7 @@
                 max-width="150px"
                 ></v-text-field>
 
-                   <v-text-field
+                <v-text-field
                 v-model="raca.value.value"
                 :error-messages="raca.errorMessage.value"
                 label="Raça"
@@ -61,20 +73,46 @@
                 ></v-text-field>
 
                 
-                   <v-text-field
+                <v-text-field
                 v-model="pelagem.value.value"
                 :error-messages="pelagem.errorMessage.value"
                 label="Pelagem"
                 max-width="300px"
                 ></v-text-field>
+
+              
                 </v-row>
+                  <p>Porte</p>
+                <v-radio-group inline>
+                  <v-radio label="Pequeno" value="porteP"></v-radio>
+                  <v-radio label="Médio" value="porteM"></v-radio>
+                  <v-radio label="Grande" value="porteG"></v-radio>
+                </v-radio-group>
               </v-col>
-                <v-select
-                v-model="select.value.value"
-                :error-messages="select.errorMessage.value"
-                :items="items"
-                label="Select"
-                ></v-select>
+            
+               <p>Sexo</p>
+                  <v-radio-group inline>
+                  <v-radio label="Masculino" value="sexoM"></v-radio>
+                  <v-radio label="Feminino" value="sexoF"></v-radio>
+                </v-radio-group>
+
+                <p>Castrado?</p>
+                <v-radio-group inline>
+                  <v-radio label="Sim" value="castradoS"></v-radio>
+                  <v-radio label="Não" value="CastradoN"></v-radio>
+                </v-radio-group>
+
+                <p>Vermifugado?</p>
+                <v-radio-group inline>
+                  <v-radio label="Sim" value="vermifugadoS"></v-radio>
+                  <v-radio label="Não" value="vermifugadoN"></v-radio>
+                </v-radio-group>
+
+                  <p>Vacinado?</p>
+                <v-radio-group inline>
+                  <v-radio label="Sim" value="vacinadoS"></v-radio>
+                  <v-radio label="Não" value="vacinadoN"></v-radio>
+                </v-radio-group>
 
                 <v-checkbox
                 v-model="checkbox.value.value"
@@ -119,28 +157,32 @@ const tab = ref(null)
   const { handleSubmit, handleReset } = useForm({
     validationSchema: {
       name (value) {
-        if (value?.length >= 2) return true
+        if (value?.length >= 0) return true
 
-        return 'Name needs to be at least 2 characters.'
+        return 'Campo Obrigatório!.'
+      }, idade (value) {
+        if (value?.length >= 0) return true
+
+        return 'Campo Obrigatório!.'
       },
          raca (value) {
-        if (value?.length >= 2) return true
+        if (value?.length >= 0) return true
 
-        return 'Name needs to be at least 2 characters.'
+        return 'Campo Obrigatório!.'
       },
         peso (value) {
-        if (value?.length >= 2) return true
+        if (value?.length >= 0) return true
 
-        return 'Name needs to be at least 2 characters.'
+        return 'Campo Obrigatório!.'
       },  pelagem (value) {
-        if (value?.length >= 2) return true
+        if (value?.length >= 0) return true
 
-        return 'Name needs to be at least 2 characters.'
+        return 'Campo Obrigatório!.'
       },
       phone (value) {
         if (/^[0-9-]{7,}$/.test(value)) return true
 
-        return 'Phone number needs to be at least 7 digits.'
+        return 'Campo Obrigatório.'
       },
       email (value) {
         if (/^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true
@@ -158,15 +200,19 @@ const tab = ref(null)
         return 'Must be checked.'
       },
     },
+     
   })
-  const name = useField('name')
-  const raca = useField('raca')
-  const peso = useField('peso')
-  const pelagem = useField('pelagem')
-  const phone = useField('phone')
-  const email = useField('email')
-  const select = useField('select')
-  const checkbox = useField('checkbox')
+  const name = useField('name', undefined, { validateOnValueUpdate: false });
+  const raca = useField('raca', undefined, { validateOnValueUpdate: false });
+  const peso = useField('peso', undefined, { validateOnValueUpdate: false });
+  const pelagem = useField('pelagem', undefined, { validateOnValueUpdate: false });
+  const idade = useField('idade', undefined, { validateOnValueUpdate: false });
+  const checkbox = useField('checkbox');
+  const outraEspecie = useField('outraEspecie', undefined, { validateOnValueUpdate: false });
+
+  const radio = ref({
+    Especie: ''
+  })
 
   const items = ref([
     'Item 1',
@@ -207,5 +253,7 @@ const tab = ref(null)
 
 .row-info-basicas {
   gap: 30px;
+  margin-top: 10px;
 }
+
 </style>
