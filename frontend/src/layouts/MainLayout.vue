@@ -58,7 +58,7 @@
   </v-app>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 
 import iconePacientes from '../assets/icons/iconePacientes.png'
@@ -114,6 +114,7 @@ const menuItems = [
     ],
   },
 ]
+
 </script>
 
 <style lang="scss">
@@ -316,5 +317,28 @@ font-size: 14px;
 
 .v-radio-group {
   margin-top: 10px;
+}
+
+.v-input__details {
+    display: none!important;
+}
+
+.msg-auxiliar {
+  color: #565656;
+  font-size: 13px;
+}
+
+.sub-page {
+     margin-top: 20px;
+    margin-bottom: 40px;
+    color: #565656;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+
+}
+
+.menu-sub-icon {
+  width: 20px;
 }
 </style>

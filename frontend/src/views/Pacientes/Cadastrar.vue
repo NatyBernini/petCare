@@ -3,20 +3,24 @@
     <p class="title-page">Cadastro do Paciente
       <img src="/./src/assets/icons/iconLapisCadastro.png" alt="Ícone" class="menu-title-icon" />
     </p>
+
+    <p class="sub-page">Pacientes / <span class="aba-atual">Cadastrar</span> <img src="/./src/assets/icons/iconeCadastro.png" alt="Ícone" class="menu-sub-icon" /></p>
     <v-tabs v-model="tab">
       <v-tab value="one">Informações do Paciente</v-tab>
-      <v-tab value="two">Proprietário/Responsável</v-tab>
     </v-tabs>
 
     <v-card-text>
       <v-tabs-window v-model="tab">
-        <v-tabs-window-item value="one">
-          <form @submit.prevent="submit">
-            <v-radio-group inline>
+        <v-tabs-window-item value="one" class="pt-5">
+          
+          <modalCadastrarTutor/>
+          <form class="mt-5" @submit.prevent="submit">
+            <div class="row-info-radios">
+            <v-radio-group inline >
               <v-radio label="Doméstico" value="domestico"></v-radio>
               <v-radio label="Resgatado" value="resgatado"></v-radio>
             </v-radio-group>
-
+</div>
             <p>Espécie*</p>
             <div class="row-info-radios">
               <v-radio-group v-model="especie.value.value" :error-messages="especie.errorMessage.value" inline
@@ -57,16 +61,21 @@
             </v-col>
 
             <p>Porte</p>
-            <v-radio-group inline>
+            <div class="row-info-radios">
+            <v-radio-group  inline>
               <v-radio label="Pequeno" value="porteP"></v-radio>
               <v-radio label="Médio" value="porteM"></v-radio>
               <v-radio label="Grande" value="porteG"></v-radio>
             </v-radio-group>
+            </div>
             <p>Sexo*</p>
+            
+            <div class="row-info-radios">
             <v-radio-group v-model="sexo.value.value" :error-messages="sexo.errorMessage.value" inline>
               <v-radio label="Masculino" value="sexoM"></v-radio>
               <v-radio label="Feminino" value="sexoF"></v-radio>
             </v-radio-group>
+            </div>
 
             <p>Castrado?*</p>
             <div class="row-info-radios">
@@ -97,13 +106,15 @@
                 :error-messages="dataVermifugado.errorMessage.value" label="Data*" type="date" max-width="150px" />
             </div>
             <p>Vacinado?*</p>
+            <div class="row-info-radios">
             <v-radio-group v-model="vacina.value.value" :error-messages="vacina.errorMessage.value" inline
               max-width="150px">
               <v-radio label="Sim" value="vacinadoS"></v-radio>
               <v-radio label="Não" value="vacinadoN"></v-radio>
             </v-radio-group>
+            </div>
 
-            <v-textarea v-if="vacina.value.value === 'vacinadoS'" v-model="quaisVacinas.value.value"
+            <v-textarea class="mb-4" v-if="vacina.value.value === 'vacinadoS'" v-model="quaisVacinas.value.value"
               :error-messages="quaisVacinas.errorMessage.value" :rules="rules" label="Quais Vacinas?*" counter
               maxlength="300" max-width="500px" placeholder="Detalhe quais vacinas foram tomadas..."></v-textarea>
 
@@ -111,7 +122,10 @@
               maxlength="300" max-width="500px"
               placeholder="Detalhe algum ponto extra sobre o paciente..."></v-textarea>
 
-            <div class="container-btn">
+            <div class="container-btn mt-5">
+                <p class="msg-auxiliar">Campos Obrigatório*</p>
+            </div>
+            <div class="container-btn mt-5">
 
               <v-btn class="btn-padrao" @click="handleReset">
                 Limpar Tudo
@@ -125,41 +139,6 @@
           </form>
         </v-tabs-window-item>
 
-        <v-tabs-window-item value="two">
-          <p>Informações Básicas</p>
-          <v-col>
-            <v-row class="row-info-basicas">
-              <v-text-field v-model="nameTutor.value.value" placeholder='Nome'
-                :error-messages="nameTutor.errorMessage.value" label="Nome*" max-width="300px"></v-text-field>
-
-              <v-text-field v-model="cpf.value.value" :error-messages="cpf.errorMessage.value" placeholder='CPF'
-                label="CPF*" max-width="150px"></v-text-field>
-
-              <v-text-field v-model="rg.value.value" :error-messages="rg.errorMessage.value" placeholder='RG'
-                type="number" label="RG*" max-width="150px"></v-text-field>
-            </v-row>
-          </v-col>
-
-          <p>Informações para Contato</p>
-          <v-col>
-            <v-row class="row-info-basicas" v-for="(item, index) in phones" :key="index">
-              <v-text-field v-model="item.number" label="Telefone*" placeholder="(00) 00000-0000" maxlength="15"
-                max-width="180px" />
-              <v-btn icon class="btn-padrao" @click="addPhone" v-if="index === phones.length - 1">
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
-              <v-btn icon class="btn-padrao" @click="removePhone(index)" v-if="phones.length > 1" >
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </v-row>
-
-            <v-row>
-              <v-text-field v-model="email.value.value" :error-messages="email.errorMessage.value" label="E-mail"
-                max-width="400px"></v-text-field>
-            </v-row>
-          </v-col>
-        </v-tabs-window-item>
-
       </v-tabs-window>
     </v-card-text>
   </v-card>
@@ -168,6 +147,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useField, useForm } from 'vee-validate'
+import modalCadastrarTutor from '../Tutor/modalCadastrarTutor.vue'
 
 defineOptions({
   name: 'PacienteCadastro',
@@ -338,8 +318,10 @@ watch(
 }
 
 .row-info-basicas {
-  gap: 30px;
+  gap: 20px;
   margin-top: 10px;
+  margin-bottom: 20px;
+  align-items: center;
 }
 
 .row-info-radios {
@@ -347,5 +329,6 @@ watch(
   align-items: center;
   flex-wrap: wrap;
   flex-direction: row;
+  margin-bottom: 20px;
 }
 </style>
