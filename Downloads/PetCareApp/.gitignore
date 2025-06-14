@@ -1,0 +1,22 @@
+# Node modules
+node_modules/
+
+# Expo
+.expo/
+.expo-shared/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Diretórios de build (Android/iOS)
+android/build/
+ios/build/
+
+# Arquivos de ambiente
+.env
+
+# VSCode
+.vscode/
