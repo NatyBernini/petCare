@@ -15,12 +15,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Componente de input com ícone
 const InputWithIcon = React.memo(
-  ({ iconName, placeholder, value, onChangeText, keyboardType = 'default' }) => {
+  ({ iconName, placeholder, value, onChangeText, keyboardType = 'default', editable = true }) => {
     return (
       <View style={styles.inputWrapper}>
         <FontAwesome5 name={iconName} size={18} color="#FF7D3B" style={styles.inputIcon} />
         <TextInput
-          style={styles.input}
+          style={[styles.input, !editable && styles.disabledInput]}
           placeholder={placeholder}
           value={value}
           onChangeText={onChangeText}
@@ -31,6 +31,7 @@ const InputWithIcon = React.memo(
           textContentType="none"
           blurOnSubmit={false}
           returnKeyType="next"
+          editable={editable}
         />
       </View>
     );
@@ -38,14 +39,25 @@ const InputWithIcon = React.memo(
 );
 
 export default function CadastroPacienteScreen() {
+  // Dados do animal
   const [nome, setNome] = useState('');
   const [raca, setRaca] = useState('');
   const [sexo, setSexo] = useState('');
   const [idade, setIdade] = useState('');
   const [pelagem, setPelagem] = useState('');
+  
+  // Dados do tutor
   const [nomeTutor, setNomeTutor] = useState('');
-  const [endereco, setEndereco] = useState('');
+  const [cep, setCep] = useState('');
+  const [logradouro, setLogradouro] = useState('');
+  const [numero, setNumero] = useState('');
+  const [complemento, setComplemento] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [estado, setEstado] = useState('');
+  
   const [pacientes, setPacientes] = useState([]);
+  const [loadingCep, setLoadingCep] = useState(false);
 
   // Carrega pacientes existentes
   useEffect(() => {
@@ -56,6 +68,37 @@ export default function CadastroPacienteScreen() {
     carregarPacientes();
   }, []);
 
+  // Busca endereço pelo CEP
+  const buscarEnderecoPorCep = useCallback(async () => {
+    if (cep.length !== 8) return;
+    
+    setLoadingCep(true);
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+      
+      if (!data.erro) {
+        setLogradouro(data.logradouro);
+        setBairro(data.bairro);
+        setCidade(data.localidade);
+        setEstado(data.uf);
+      } else {
+        Alert.alert('CEP não encontrado', 'Por favor, verifique o CEP digitado.');
+      }
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível buscar o endereço. Verifique sua conexão.');
+    } finally {
+      setLoadingCep(false);
+    }
+  }, [cep]);
+
+  // Monitora quando o CEP está completo para buscar automaticamente
+  useEffect(() => {
+    if (cep.length === 8) {
+      buscarEnderecoPorCep();
+    }
+  }, [cep, buscarEnderecoPorCep]);
+
   // Salva lista de pacientes
   const salvarPacientes = useCallback(async (listaAtualizada) => {
     await AsyncStorage.setItem('pacientes', JSON.stringify(listaAtualizada));
@@ -63,8 +106,8 @@ export default function CadastroPacienteScreen() {
 
   // Cadastra novo paciente
   const handleCadastro = async () => {
-    if (!nome || !raca || !sexo || !idade || !pelagem || !nomeTutor || !endereco) {
-      Alert.alert('Atenção', 'Por favor, preencha todos os campos!');
+    if (!nome || !raca || !sexo || !idade || !pelagem || !nomeTutor || !cep) {
+      Alert.alert('Atenção', 'Por favor, preencha todos os campos obrigatórios!');
       return;
     }
 
@@ -74,8 +117,18 @@ export default function CadastroPacienteScreen() {
       sexo, 
       idade, 
       pelagem, 
-      nomeTutor, 
-      endereco 
+      tutor: {
+        nome: nomeTutor,
+        endereco: {
+          cep,
+          logradouro,
+          numero,
+          complemento,
+          bairro,
+          cidade,
+          estado
+        }
+      }
     };
 
     try {
@@ -92,7 +145,13 @@ export default function CadastroPacienteScreen() {
       setIdade('');
       setPelagem('');
       setNomeTutor('');
-      setEndereco('');
+      setCep('');
+      setLogradouro('');
+      setNumero('');
+      setComplemento('');
+      setBairro('');
+      setCidade('');
+      setEstado('');
     } catch (error) {
       Alert.alert('Erro', 'Ocorreu um erro ao salvar o paciente');
     }
@@ -148,19 +207,19 @@ export default function CadastroPacienteScreen() {
           
           <InputWithIcon 
             iconName="dog" 
-            placeholder="Nome do Animal" 
+            placeholder="Nome do Animal*" 
             value={nome} 
             onChangeText={setNome} 
           />
           
           <InputWithIcon 
             iconName="paw" 
-            placeholder="Raça" 
+            placeholder="Raça*" 
             value={raca} 
             onChangeText={setRaca} 
           />
 
-          <Text style={styles.label}>Sexo:</Text>
+          <Text style={styles.label}>Sexo*:</Text>
           <View style={styles.radioContainer}>
             <TouchableOpacity
               style={[styles.radioButton, sexo === 'Macho' && styles.radioSelected]}
@@ -181,15 +240,14 @@ export default function CadastroPacienteScreen() {
 
           <InputWithIcon
             iconName="sort-numeric-up"
-            placeholder="Idade"
+            placeholder="Idade*"
             value={idade}
             onChangeText={setIdade}
-            keyboardType="numeric"
           />
           
           <InputWithIcon 
             iconName="palette" 
-            placeholder="Pelagem" 
+            placeholder="Pelagem*" 
             value={pelagem} 
             onChangeText={setPelagem} 
           />
@@ -199,16 +257,68 @@ export default function CadastroPacienteScreen() {
           
           <InputWithIcon 
             iconName="user" 
-            placeholder="Nome do Tutor" 
+            placeholder="Nome do Tutor*" 
             value={nomeTutor} 
             onChangeText={setNomeTutor} 
           />
           
           <InputWithIcon
-            iconName="map-marker-alt"
-            placeholder="Endereço"
-            value={endereco}
-            onChangeText={setEndereco}
+            iconName="map-marked-alt"
+            placeholder="CEP* (apenas números)"
+            value={cep}
+            onChangeText={(text) => setCep(text.replace(/\D/g, ''))}
+            keyboardType="numeric"
+            maxLength={8}
+          />
+
+          {loadingCep && <Text style={styles.loadingText}>Buscando endereço...</Text>}
+
+          <InputWithIcon
+            iconName="road"
+            placeholder="Logradouro"
+            value={logradouro}
+            onChangeText={setLogradouro}
+            editable={false}
+          />
+
+          <InputWithIcon
+            iconName="hashtag"
+            placeholder="Número"
+            value={numero}
+            onChangeText={setNumero}
+            keyboardType="numeric"
+          />
+
+          <InputWithIcon
+            iconName="home"
+            placeholder="Complemento"
+            value={complemento}
+            onChangeText={setComplemento}
+          />
+
+          <InputWithIcon
+            iconName="map"
+            placeholder="Bairro"
+            value={bairro}
+            onChangeText={setBairro}
+            editable={false}
+          />
+
+          <InputWithIcon
+            iconName="city"
+            placeholder="Cidade"
+            value={cidade}
+            onChangeText={setCidade}
+            editable={false}
+          />
+
+          <InputWithIcon
+            iconName="flag"
+            placeholder="Estado"
+            value={estado}
+            onChangeText={setEstado}
+            editable={false}
+            maxLength={2}
           />
 
           {/* Botões de Ação */}
@@ -307,6 +417,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  disabledInput: {
+    color: '#777',
+    backgroundColor: '#f5f5f5',
+  },
   radioContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -376,5 +490,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 16,
     marginLeft: 10,
+  },
+  loadingText: {
+    color: '#FF7D3B',
+    textAlign: 'center',
+    marginBottom: 15,
+    fontStyle: 'italic',
   },
 });

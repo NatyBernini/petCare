@@ -136,8 +136,9 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   headerText: {
+    marginTop: 20,
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-Regular',
     color: '#000',
     marginBottom: 15
   },
@@ -152,6 +153,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     textAlign: 'center',
+    fontFamily: 'Poppins-Regular',
   },
   tabMenuContainer: {
     height: 100,
@@ -164,8 +166,7 @@ const styles = StyleSheet.create({
   },
   abaContainer: {
     alignItems: 'center',
-    marginRight: 10,
-    width: 70
+    width: 90
   },
   abaIconeContainer: {
     width: 60,
@@ -188,10 +189,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     fontSize: 12,
     textAlign: 'center',
+    fontFamily: 'Poppins-Regular',
   },
   abaLabelAtivo: {
     color: '#FF7D3B',
-    fontWeight: '600',
+    fontFamily: 'Poppins-Regular',
   },
   mainContent: {
     flex: 1,
@@ -199,9 +201,8 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: '600',
     color: '#000',
-    marginBottom: 12,
+    fontFamily: 'Poppins-Regular',
   },
   contentCard: {
     flex: 1,

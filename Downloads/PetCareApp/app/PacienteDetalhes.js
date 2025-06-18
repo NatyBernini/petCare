@@ -19,7 +19,6 @@ export default function PacienteDetalhes({ route }) {
       const consultasRealizadas = consultasRealizadasJSON ? JSON.parse(consultasRealizadasJSON) : [];
       const consultasAgendadas = consultasAgendadasJSON ? JSON.parse(consultasAgendadasJSON) : [];
 
-      // Função para filtrar consultas pelo paciente atual
       const filtrarPorPaciente = (consulta) => {
         if (!consulta.paciente) return false;
         if (typeof consulta.paciente === 'object' && consulta.paciente.nome) {
@@ -31,10 +30,8 @@ export default function PacienteDetalhes({ route }) {
         return false;
       };
 
-      // Filtrar histórico por paciente
       const historicoFiltrado = consultasRealizadas.filter(filtrarPorPaciente);
 
-      // Função para identificar se uma consulta agendada já foi realizada
       const consultaFoiRealizada = (consultaAgendada) => {
         return historicoFiltrado.some((consultaRealizada) => {
           const pacienteAgendado = typeof consultaAgendada.paciente === 'string' ? consultaAgendada.paciente : consultaAgendada.paciente?.nome || '';
@@ -48,7 +45,6 @@ export default function PacienteDetalhes({ route }) {
         });
       };
 
-      // Filtrar agenda por paciente e excluir as consultas já realizadas
       const agendaFiltrada = consultasAgendadas
         .filter(filtrarPorPaciente)
         .filter(consulta => !consultaFoiRealizada(consulta));
@@ -66,98 +62,123 @@ export default function PacienteDetalhes({ route }) {
     }, [paciente.nome])
   );
 
- return (
-  <ScrollView contentContainerStyle={styles.container}>
-    {/* Botão Voltar */}
-    <TouchableOpacity style={styles.btnVoltar} onPress={() => navigation.goBack()}>
-      <FontAwesome5 name="arrow-left" size={18} color="#FF7D3B" />
-      <Text style={styles.textoBtnVoltar}>Voltar</Text>
-    </TouchableOpacity>
-
-    <Text style={styles.titulo}>Detalhes do Paciente</Text>
+  // Função para formatar o endereço completo
+  const formatarEndereco = () => {
+    if (!paciente.tutor?.endereco) return 'Não informado';
     
-    <View style={styles.cardDetalhes}>
-      <Text style={styles.label}>
-        <FontAwesome5 name="paw" color="#FF7D3B" /> Nome: <Text style={styles.valor}>{paciente.nome}</Text>
-      </Text>
-      <Text style={styles.label}>
-        <FontAwesome5 name="dna" color="#FF7D3B" /> Raça: <Text style={styles.valor}>{paciente.raca}</Text>
-      </Text>
-      <Text style={styles.label}>
-        <FontAwesome5 name="venus-mars" color="#FF7D3B" /> Sexo: <Text style={styles.valor}>{paciente.sexo}</Text>
-      </Text>
-      <Text style={styles.label}>
-        <FontAwesome5 name="birthday-cake" color="#FF7D3B" /> Idade: <Text style={styles.valor}>{paciente.idade}</Text>
-      </Text>
-      <Text style={styles.label}>
-        <FontAwesome5 name="paint-brush" color="#FF7D3B" /> Pelagem: <Text style={styles.valor}>{paciente.pelagem}</Text>
-      </Text>
-      <Text style={styles.label}>
-        <FontAwesome5 name="user" color="#FF7D3B" /> Tutor: <Text style={styles.valor}>{paciente.nomeTutor}</Text>
-      </Text>
-      <Text style={styles.label}>
-        <FontAwesome5 name="map-marker-alt" color="#FF7D3B" /> Endereço: <Text style={styles.valor}>{paciente.endereco}</Text>
-      </Text>
-    </View>
+    const endereco = paciente.tutor.endereco;
+    let enderecoCompleto = '';
+    
+    if (endereco.logradouro) enderecoCompleto += endereco.logradouro;
+    if (endereco.numero) enderecoCompleto += ', ' + endereco.numero;
+    if (endereco.complemento) enderecoCompleto += ' - ' + endereco.complemento;
+    if (endereco.bairro) enderecoCompleto += '\n' + endereco.bairro;
+    if (endereco.cidade) enderecoCompleto += '\n' + endereco.cidade;
+    if (endereco.estado) enderecoCompleto += ' - ' + endereco.estado;
+    if (endereco.cep) enderecoCompleto += '\nCEP: ' + endereco.cep;
+    
+    return enderecoCompleto || 'Não informado';
+  };
 
-    {/* Histórico de Consultas */}
-    <Text style={[styles.titulo, { marginTop: 10 }]}>Histórico de Consultas</Text>
-    {historicoConsultas.length === 0 ? (
-      <Text style={styles.semConsulta}>Nenhuma consulta encontrada.</Text>
-    ) : (
-      historicoConsultas.map((consulta, index) => (
-        <View key={`hist-${index}`} style={styles.cardConsulta}>
-          <Text style={styles.cardText}>
-            <FontAwesome5 name="calendar" color="#FF7D3B" /> Data: {consulta.data}
-          </Text>
-          <Text style={styles.cardText}>
-            <FontAwesome5 name="clock" color="#FF7D3B" /> Hora: {consulta.hora}
-          </Text>
-          <Text style={styles.cardText}>
-            <FontAwesome5 name="user-md" color="#FF7D3B" /> Veterinário: {typeof consulta.veterinario === 'string' ? consulta.veterinario : consulta.veterinario?.nome || ''}
-          </Text>
-          <Text style={styles.cardText}>
-            <FontAwesome5 name="notes-medical" color="#FF7D3B" /> Sintomas: {consulta.sintomas.substring(0, 50)}{consulta.sintomas.length > 50 ? '...' : ''}
-          </Text>
-          <TouchableOpacity
-            style={styles.detalhesButton}
-            onPress={() => navigation.navigate('ConsultaDetalhes', { consulta })}
-          >
-            <FontAwesome5 name="search" size={16} color="#FF7D3B" />
-            <Text style={styles.detalhesButtonText}>Ver Detalhes</Text>
-          </TouchableOpacity>
-        </View>
-      ))
-    )}
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      {/* Botão Voltar */}
+      <TouchableOpacity style={styles.btnVoltar} onPress={() => navigation.goBack()}>
+        <FontAwesome5 name="arrow-left" size={18} color="#FF7D3B" />
+        <Text style={styles.textoBtnVoltar}>Voltar</Text>
+      </TouchableOpacity>
 
-    {/* Consultas Agendadas */}
-    <Text style={[styles.titulo, { marginTop: 20 }]}>Consultas Agendadas</Text>
-    {consultasAgendadas.length === 0 ? (
-      <Text style={styles.semConsulta}>Nenhuma consulta agendada.</Text>
-    ) : (
-      consultasAgendadas.map((consulta, index) => (
-        <View key={`agenda-${index}`} style={styles.cardConsulta}>
-          <Text style={styles.cardText}>
-            <FontAwesome5 name="calendar" color="#FF7D3B" /> Data: {consulta.data}
-          </Text>
-          <Text style={styles.cardText}>
-            <FontAwesome5 name="clock" color="#FF7D3B" /> Hora: {consulta.hora}
-          </Text>
-          <Text style={styles.cardText}>
-            <FontAwesome5 name="user-md" color="#FF7D3B" /> Veterinário: {typeof consulta.veterinario === 'string' ? consulta.veterinario : consulta.veterinario?.nome || ''}
-          </Text>
-          <TouchableOpacity
-            style={styles.detalhesButton}
-            onPress={() => navigation.navigate('ConsultaDetalhes', { consulta })}
-          >
-            <FontAwesome5 name="search" size={16} color="#FF7D3B" />
-            <Text style={styles.detalhesButtonText}>Ver Detalhes</Text>
-          </TouchableOpacity>
-        </View>
-      ))
-    )}
-  </ScrollView>
-);
+      <Text style={styles.titulo}>Detalhes do Paciente</Text>
+      
+      <View style={styles.cardDetalhes}>
+        <Text style={styles.label}>
+          <FontAwesome5 name="paw" color="#FF7D3B" /> Nome: <Text style={styles.valor}>{paciente.nome}</Text>
+        </Text>
+        <Text style={styles.label}>
+          <FontAwesome5 name="dna" color="#FF7D3B" /> Raça: <Text style={styles.valor}>{paciente.raca}</Text>
+        </Text>
+        <Text style={styles.label}>
+          <FontAwesome5 name="venus-mars" color="#FF7D3B" /> Sexo: <Text style={styles.valor}>{paciente.sexo}</Text>
+        </Text>
+        <Text style={styles.label}>
+          <FontAwesome5 name="birthday-cake" color="#FF7D3B" /> Idade: <Text style={styles.valor}>{paciente.idade}</Text>
+        </Text>
+        <Text style={styles.label}>
+          <FontAwesome5 name="paint-brush" color="#FF7D3B" /> Pelagem: <Text style={styles.valor}>{paciente.pelagem}</Text>
+        </Text>
+        
+        {/* Informações do Tutor */}
+        <Text style={styles.subtitulo}>Informações do Tutor</Text>
+        
+        <Text style={styles.label}>
+          <FontAwesome5 name="user" color="#FF7D3B" /> Nome: <Text style={styles.valor}>{paciente.tutor?.nome || 'Não informado'}</Text>
+        </Text>
+        
+        {/* Endereço formatado */}
+        <Text style={styles.label}>
+          <FontAwesome5 name="map-marker-alt" color="#FF7D3B" /> Endereço:
+        </Text>
+        <Text style={[styles.valor, { marginLeft: 25, marginTop: 5 }]}>{formatarEndereco()}</Text>
+      </View>
+
+      {/* Histórico de Consultas */}
+      <Text style={[styles.titulo, { marginTop: 10 }]}>Histórico de Consultas</Text>
+      {historicoConsultas.length === 0 ? (
+        <Text style={styles.semConsulta}>Nenhuma consulta encontrada.</Text>
+      ) : (
+        historicoConsultas.map((consulta, index) => (
+          <View key={`hist-${index}`} style={styles.cardConsulta}>
+            <Text style={styles.cardText}>
+              <FontAwesome5 name="calendar" color="#FF7D3B" /> Data: {consulta.data}
+            </Text>
+            <Text style={styles.cardText}>
+              <FontAwesome5 name="clock" color="#FF7D3B" /> Hora: {consulta.hora}
+            </Text>
+            <Text style={styles.cardText}>
+              <FontAwesome5 name="user-md" color="#FF7D3B" /> Veterinário: {typeof consulta.veterinario === 'string' ? consulta.veterinario : consulta.veterinario?.nome || ''}
+            </Text>
+            <Text style={styles.cardText}>
+              <FontAwesome5 name="notes-medical" color="#FF7D3B" /> Sintomas: {consulta.sintomas.substring(0, 50)}{consulta.sintomas.length > 50 ? '...' : ''}
+            </Text>
+            <TouchableOpacity
+              style={styles.detalhesButton}
+              onPress={() => navigation.navigate('ConsultaDetalhes', { consulta })}
+            >
+              <FontAwesome5 name="search" size={16} color="#FF7D3B" />
+              <Text style={styles.detalhesButtonText}>Ver Detalhes</Text>
+            </TouchableOpacity>
+          </View>
+        ))
+      )}
+
+      {/* Consultas Agendadas */}
+      <Text style={[styles.titulo, { marginTop: 20 }]}>Consultas Agendadas</Text>
+      {consultasAgendadas.length === 0 ? (
+        <Text style={styles.semConsulta}>Nenhuma consulta agendada.</Text>
+      ) : (
+        consultasAgendadas.map((consulta, index) => (
+          <View key={`agenda-${index}`} style={styles.cardConsulta}>
+            <Text style={styles.cardText}>
+              <FontAwesome5 name="calendar" color="#FF7D3B" /> Data: {consulta.data}
+            </Text>
+            <Text style={styles.cardText}>
+              <FontAwesome5 name="clock" color="#FF7D3B" /> Hora: {consulta.hora}
+            </Text>
+            <Text style={styles.cardText}>
+              <FontAwesome5 name="user-md" color="#FF7D3B" /> Veterinário: {typeof consulta.veterinario === 'string' ? consulta.veterinario : consulta.veterinario?.nome || ''}
+            </Text>
+            <TouchableOpacity
+              style={styles.detalhesButton}
+              onPress={() => navigation.navigate('ConsultaDetalhes', { consulta })}
+            >
+              <FontAwesome5 name="search" size={16} color="#FF7D3B" />
+              <Text style={styles.detalhesButtonText}>Ver Detalhes</Text>
+            </TouchableOpacity>
+          </View>
+        ))
+      )}
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -178,19 +199,28 @@ const styles = StyleSheet.create({
   textoBtnVoltar: {
     color: '#FF7D3B',
     fontSize: 16,
+    fontFamily: 'Poppins-Regular',
     marginLeft: 8,
     fontWeight: '600',
   },
   titulo: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 20,
+    fontFamily: 'Poppins-Regular',
     marginBottom: 20,
     color: '#FF7D3B',
     borderLeftWidth: 4,
     borderLeftColor: '#FF7D3B',
     paddingLeft: 15,
   },
-cardDetalhes: {
+  subtitulo: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    marginTop: 15,
+    marginBottom: 10,
+    color: '#FF7D3B',
+    paddingLeft: 5,
+  },
+  cardDetalhes: {
     backgroundColor: '#FFF',
     padding: 20,
     borderRadius: 12,
@@ -204,14 +234,14 @@ cardDetalhes: {
     borderColor: '#FFE8DC',
   },
   label: {
-    fontSize: 16,
+    fontSize: 14,
+    fontFamily: 'Poppins-Regular',
     marginBottom: 8,
-    fontWeight: '600',
     color: '#FF7D3B',
   },
   valor: {
-    fontWeight: 'normal',
     color: '#555',
+    fontFamily: 'Poppins-Regular',
   },
   cardConsulta: {
     backgroundColor: '#FFF',
@@ -227,14 +257,15 @@ cardDetalhes: {
     borderLeftColor: '#FF7D3B',
   },
   cardText: {
-    fontSize: 15,
+    fontSize: 14,
+    fontFamily: 'Poppins-Regular',
     color: '#555',
     marginBottom: 6,
   },
   semConsulta: {
-    fontSize: 16,
+    fontSize: 14,
+    fontFamily: 'Poppins-Regular',
     color: '#999',
-    fontStyle: 'italic',
     textAlign: 'center',
     marginTop: 10,
   },
@@ -251,5 +282,6 @@ cardDetalhes: {
     color: '#FF7D3B',
     marginLeft: 8,
     fontWeight: '600',
+    fontFamily: 'Poppins-Regular',
   },
 });
