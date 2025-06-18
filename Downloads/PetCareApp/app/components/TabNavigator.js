@@ -34,12 +34,7 @@ const TabNavigator = () => {
         tabBarStyle: {
           position: 'absolute',
           height: 60,
-          backgroundColor: 'rgb(255, 189, 36)',
-          borderTopWidth: 2,
-          borderTopColor:'rgb(80, 80, 80)',
-          borderWidth: 2,
-          borderColor: 'rgb(80, 80, 80)',
-          elevation: 10,
+          backgroundColor: 'rgb(255, 145, 0)',
           paddingBottom: 10,
           paddingTop: 10,
           borderRadius: 20,

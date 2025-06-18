@@ -4,17 +4,15 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function CadastroHomeScreen({ navigation }) {
   return (
+    <ScrollView style={styles.containerScroll}
+  showsVerticalScrollIndicator={false}
+>
     <View style={styles.container}>
 
       {/* Área da mensagem de boas-vindas */}
    <View style={styles.welcomeContainer}>
   <Text style={styles.welcomeText}>Bem-vindo ao PetCare</Text>
-  <Image 
-    source={require('../assets/iconePacientes.png')} 
-    style={styles.welcomeImage} 
-    resizeMode="contain"
-  />
-</View>
+  </View>
 
 
 <ScrollView
@@ -26,61 +24,66 @@ export default function CadastroHomeScreen({ navigation }) {
     Escolha uma opção abaixo para iniciar o cadastro ou agendar uma consulta:
   </Text>
 
-  <TouchableOpacity
-    style={[styles.card, { backgroundColor: 'rgb(196, 229, 246)' }]}
-    onPress={() => navigation.navigate('CadastroPaciente')}
-  >
-    <FontAwesome5 name="paw" size={40} color="#000" />
-    <Text style={styles.cardText}>Cadastrar Paciente</Text>
-  </TouchableOpacity>
+ <TouchableOpacity
+  style={[styles.card]}
+  onPress={() => navigation.navigate('CadastroPaciente')}
+>
+  <FontAwesome5 name="paw" size={40} color="rgb(81, 81, 81)" style={[styles.iconCard]} />
+  <Text style={styles.cardText}>Paciente</Text>
+</TouchableOpacity>
 
-  <TouchableOpacity
-    style={[styles.card, { backgroundColor: 'rgb(246, 196, 203)' }]}
-    onPress={() => navigation.navigate('CadastroConsulta')}
-  >
-    <FontAwesome5 name="calendar-check" size={40} color="#000" />
-    <Text style={styles.cardText}>Agendar Consulta</Text>
-  </TouchableOpacity>
+<TouchableOpacity
+  style={[styles.card]}
+  onPress={() => navigation.navigate('CadastroConsulta')}
+>
+  <FontAwesome5 name="calendar-check" size={40} color="rgb(81, 81, 81)" style={[styles.iconCard]} />
+  <Text style={styles.cardText}>Agendar Consulta</Text>
+</TouchableOpacity>
 
-  <TouchableOpacity
-    style={[styles.card, { backgroundColor: 'rgb(245, 201, 130)' }]}
-    onPress={() => navigation.navigate('CadastroVeterinario')}
-  >
-    <FontAwesome5 name="stethoscope" size={40} color="#000" />
-    <Text style={[styles.cardText, { color: '#000' }]}>Cadastrar Veterinário</Text>
-  </TouchableOpacity>
+<TouchableOpacity
+  style={[styles.card]}
+  onPress={() => navigation.navigate('CadastroVeterinario')}
+>
+  <FontAwesome5 name="stethoscope" size={40} color="rgb(81, 81, 81)" style={[styles.iconCard]}  />
+  <Text style={[styles.cardText]}>Veterinário</Text>
+</TouchableOpacity>
 
-  <TouchableOpacity
-    style={[styles.card, { backgroundColor: 'rgb(167, 223, 201)' }]}
-    onPress={() => navigation.navigate('RealizarConsulta')}
-  >
-    <FontAwesome5 name="notes-medical" size={40} color="#000" />
-    <Text style={[styles.cardText, { color: '#000' }]}>Realizar Consulta</Text>
-  </TouchableOpacity>
+<TouchableOpacity
+  style={[styles.card]}
+  onPress={() => navigation.navigate('RealizarConsulta')}
+>
+  <FontAwesome5 name="notes-medical" size={40} color="	rgb(81, 81, 81)" style={[styles.iconCard]}/>
+  <Text style={[styles.cardText]}>Realizar Consulta</Text>
+</TouchableOpacity>
+
 </ScrollView>
 
 
     </View>
+
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  containerScroll: {
+    backgroundColor: '#fff'
+  },
   container: {
     paddingTop: 40,
     flex: 1,
-    backgroundColor: 'rgb(254, 210, 108)', // cor de fundo geral (pode ajustar)
+    backgroundColor: 'rgb(255, 145, 0)',
   },
   welcomeContainer: {
-    height: 180, // maior altura para ocupar mais espaço
+    height: 180,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 30,
-    // fundo transparente para deixar a cor do container principal aparecer
+    paddingHorizontal: 30
   },
   welcomeText: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#fff',
   },
   welcomeImage: {
   width: 120,
@@ -91,15 +94,8 @@ const styles = StyleSheet.create({
   backgroundColor: '#fff',
   paddingHorizontal: 30,
   paddingTop: 40,
-  borderTopLeftRadius: 40,
-  borderTopRightRadius: 40,
-  borderWidth: 2,
-  borderColor: 'rgb(102, 102, 102)',
-  elevation: 10,
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: -3 },
-  shadowOpacity: 0.2,
-  shadowRadius: 5,
+  borderTopRightRadius: 60,
+  borderTopLeftRadius: 60,
 },
 
 buttonsContainer: {
@@ -115,21 +111,19 @@ card: {
   backgroundColor: '#fff',
   paddingVertical: 20,
   paddingHorizontal: 10,
-  borderRadius: 30,
-  borderWidth: 2,
-  borderColor: 'rgba(103, 103, 103, 0.6)',
   marginBottom: 20,
-  elevation: 5, // sombra Android
-  shadowColor: '#000', // sombra iOS
-  shadowOffset: { width: 0, height: 3 },
-  shadowOpacity: 0.3,
-  shadowRadius: 5,
   width: '48%',
 },
+iconCard: {
+backgroundColor: 'rgb(255, 232, 195)',
+padding: 20,
+borderRadius: 50
+},
   cardText: {
+    marginTop: 10,
     fontSize: 18,
     fontWeight: '600',
-    color: '#000',
+    color: 'rgb(102, 102, 102)',
      textAlign: 'center', 
   },
   infoText: {

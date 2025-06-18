@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { 
+  View, 
+  Text, 
+  FlatList, 
+  StyleSheet, 
+  TouchableOpacity, 
+  TextInput 
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PacientesScreen = () => {
   const [pacientes, setPacientes] = useState([]);
+  const [filtro, setFiltro] = useState('');
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
-  // Recarrega a lista toda vez que a tela ficar ativa/focada
   useEffect(() => {
     const carregarPacientes = async () => {
       try {
@@ -29,36 +36,63 @@ const PacientesScreen = () => {
     }
   }, [isFocused]);
 
+  // Função para filtrar pacientes por nome ou tutor
+  const pacientesFiltrados = pacientes.filter(paciente => {
+    const termoBusca = filtro.toLowerCase();
+    return (
+      paciente.nome.toLowerCase().includes(termoBusca) ||
+      (paciente.nomeTutor && paciente.nomeTutor.toLowerCase().includes(termoBusca))
+    );
+  });
+
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-       <TouchableOpacity
-          onPress={() => navigation.navigate('PacienteDetalhes', { paciente: item })}
-        >
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <View>
-          <Text style={styles.nome}>{item.nome}</Text>
-          <Text style={styles.tutor}>Tutor: {item.nomeTutor}</Text>
-        </View>
-       
+      <TouchableOpacity
+        onPress={() => navigation.navigate('PacienteDetalhes', { paciente: item })}
+      >
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <View>
+            <Text style={styles.nome}>{item.nome}</Text>
+            <Text style={styles.tutor}>Tutor: {item.nomeTutor}</Text>
+          </View>
           <Icon name="eye" size={24} color='rgb(255, 145, 0)' />
-        
-      </View>
+        </View>
       </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      {pacientes.length === 0 ? (
-        <Text style={styles.vazio}>Nenhum paciente cadastrado.</Text>
+      {/* Campo de busca */}
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Buscar por paciente ou tutor..."
+          placeholderTextColor="#999"
+          value={filtro}
+          onChangeText={setFiltro}
+        />
+        <Icon 
+          name="search" 
+          size={20} 
+          color="#999" 
+          style={styles.searchIcon} 
+        />
+      </View>
+
+      {/* Lista de pacientes */}
+      {pacientesFiltrados.length === 0 ? (
+        <Text style={styles.vazio}>
+          {filtro ? 'Nenhum resultado encontrado' : 'Nenhum paciente cadastrado'}
+        </Text>
       ) : (
         <FlatList
-          data={pacientes}
+          data={pacientesFiltrados}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderItem}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.listaHorizontal}
+          horizontal={false}
+          scrollEnabled={false}
+          contentContainerStyle={styles.listaVertical}
         />
       )}
     </View>
@@ -72,22 +106,40 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingBottom: 0,
   },
+  searchContainer: {
+    position: 'relative',
+    marginBottom: 15,
+  },
+  searchInput: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 40,
+    paddingVertical: 12,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: '#FF7D3B',
+    fontSize: 14,
+  },
+  searchIcon: {
+    position: 'absolute',
+    left: 15,
+    top: 12,
+  },
   vazio: {
     textAlign: 'center',
     marginTop: 40,
     fontSize: 16,
     color: '#999',
   },
-  listaHorizontal: {
+  listaVertical: {
     paddingVertical: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
   },
   card: {
     backgroundColor: 'rgb(255, 243, 227)',
     padding: 20,
     borderRadius: 20,
-    marginRight: 12,
-    width: 250,
+    marginBottom: 12,
+    width: '100%',
   },
   nome: {
     fontSize: 18,

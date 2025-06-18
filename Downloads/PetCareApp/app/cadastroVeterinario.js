@@ -6,9 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  KeyboardAvoidingView, Platform
+  KeyboardAvoidingView, 
+  Platform,
+  StyleSheet
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { FontAwesome5, Feather } from '@expo/vector-icons';
 
 export default function CadastroVeterinarioScreen() {
   const [nome, setNome] = useState('');
@@ -30,34 +33,45 @@ export default function CadastroVeterinarioScreen() {
 
   const handleCadastro = async () => {
     if (!nome || !crmv || !especialidade) {
-      Alert.alert('Erro', 'Preencha todos os campos!');
+      Alert.alert('Atenção', 'Por favor, preencha todos os campos!');
       return;
     }
 
     const novoVeterinario = { nome, crmv, especialidade };
-    const listaAtualizada = [...veterinarios, novoVeterinario];
+    
+    try {
+      const listaAtualizada = [...veterinarios, novoVeterinario];
+      setVeterinarios(listaAtualizada);
+      await salvarVeterinarios(listaAtualizada);
 
-    setVeterinarios(listaAtualizada);
-    await salvarVeterinarios(listaAtualizada);
-
-    Alert.alert('Sucesso', 'Veterinário cadastrado com sucesso!');
-    setNome('');
-    setCrmv('');
-    setEspecialidade('');
+      Alert.alert('Sucesso', 'Veterinário cadastrado com sucesso!');
+      setNome('');
+      setCrmv('');
+      setEspecialidade('');
+    } catch (error) {
+      Alert.alert('Erro', 'Não foi possível cadastrar o veterinário');
+    }
   };
 
   const handleLimparVeterinarios = () => {
     Alert.alert(
       'Confirmar exclusão',
-      'Deseja realmente apagar todos os veterinários?',
+      'Deseja realmente apagar todos os veterinários cadastrados?',
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { 
+          text: 'Cancelar', 
+          style: 'cancel' 
+        },
         {
-          text: 'Sim, apagar',
+          text: 'Confirmar',
           onPress: async () => {
-            await AsyncStorage.removeItem('veterinarios');
-            setVeterinarios([]);
-            Alert.alert('Lista zerada', 'Todos os veterinários foram apagados.');
+            try {
+              await AsyncStorage.removeItem('veterinarios');
+              setVeterinarios([]);
+              Alert.alert('Sucesso', 'Todos os veterinários foram removidos');
+            } catch (error) {
+              Alert.alert('Erro', 'Não foi possível limpar os dados');
+            }
           },
         },
       ]
@@ -65,111 +79,152 @@ export default function CadastroVeterinarioScreen() {
   };
 
   return (
-      <KeyboardAvoidingView
-    style={{ flex: 1 }}
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    keyboardVerticalOffset={80}
-  >
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.titulo}>Cadastro de Veterinário</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}
+    >
+      <ScrollView 
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Cadastro de Veterinário</Text>
+          <Feather name="user-plus" size={24} color="#fff" />
+        </View>
 
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.input}
-          placeholder="Nome"
-          placeholderTextColor="#aaa"
-          value={nome}
-          onChangeText={setNome}
-        />
-      </View>
+        {/* Formulário */}
+        <View style={styles.formContainer}>
+          {/* Campo Nome */}
+          <View style={styles.inputWrapper}>
+            <FontAwesome5 name="user-md" size={18} color="#FF7D3B" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Nome Completo"
+              placeholderTextColor="#999"
+              value={nome}
+              onChangeText={setNome}
+            />
+          </View>
 
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.input}
-          placeholder="CRMV"
-          placeholderTextColor="#aaa"
-          value={crmv}
-          onChangeText={setCrmv}
-          keyboardType="default"
-        />
-      </View>
+          {/* Campo CRMV */}
+          <View style={styles.inputWrapper}>
+            <FontAwesome5 name="id-card" size={16} color="#FF7D3B" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Número do CRMV"
+              placeholderTextColor="#999"
+              value={crmv}
+              onChangeText={setCrmv}
+              keyboardType="default"
+            />
+          </View>
 
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.input}
-          placeholder="Especialidade"
-          placeholderTextColor="#aaa"
-          value={especialidade}
-          onChangeText={setEspecialidade}
-        />
-      </View>
+          {/* Campo Especialidade */}
+          <View style={styles.inputWrapper}>
+            <FontAwesome5 name="stethoscope" size={16} color="#FF7D3B" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Especialidade"
+              placeholderTextColor="#999"
+              value={especialidade}
+              onChangeText={setEspecialidade}
+            />
+          </View>
 
-      <TouchableOpacity style={styles.btnPrimary} onPress={handleCadastro}>
-        <Text style={styles.btnText}>Cadastrar Veterinário</Text>
-      </TouchableOpacity>
+          {/* Botão Cadastrar */}
+          <TouchableOpacity 
+            style={styles.btnPrimary} 
+            onPress={handleCadastro}
+            activeOpacity={0.8}
+          >
+            <FontAwesome5 name="save" size={18} color="#fff" />
+            <Text style={styles.btnText}> Cadastrar Veterinário</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity style={styles.btnDanger} onPress={handleLimparVeterinarios}>
-        <Text style={styles.btnText}>Limpar todos os veterinários</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          {/* Botão Limpar */}
+          <TouchableOpacity 
+            style={styles.btnSecondary} 
+            onPress={handleLimparVeterinarios}
+            activeOpacity={0.8}
+          >
+            <Feather name="trash-2" size={18} color="#FF7D3B" />
+            <Text style={styles.btnSecondaryText}> Limpar Todos</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
-    padding: 25,
-    paddingTop: 50,
-    paddingBottom: 100,
-    backgroundColor: '#f9faff',
     flexGrow: 1,
+    backgroundColor: '#f9f9f9',
+    paddingBottom: 100
   },
-  titulo: {
-    fontSize: 24,
-    marginBottom: 30,
-    textAlign: 'center',
-    fontWeight: '700',
-    color: '#333',
+  header: {
+    backgroundColor: 'rgb(255, 145, 0)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 25,
+    paddingTop: 40,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  headerTitle: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  formContainer: {
+    padding: 25,
+    paddingTop: 30,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 12,
-    paddingHorizontal: 15,
-    marginBottom: 18,
-    elevation: 3,
+    paddingHorizontal: 18,
+    marginBottom: 20,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  inputIcon: {
+    marginRight: 12,
   },
   input: {
     flex: 1,
-    height: 45,
+    height: 50,
     fontSize: 16,
     color: '#333',
   },
   btnPrimary: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 15,
-    borderRadius: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FF7D3B',
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 10,
     marginBottom: 15,
-    alignItems: 'center',
     elevation: 3,
-    shadowColor: '#007AFF',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-  },
-  btnDanger: {
-    backgroundColor: '#ff4d4d',
-    paddingVertical: 15,
-    borderRadius: 30,
-    alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#ff4d4d',
-    shadowOffset: { width: 0, height: 5 },
+    shadowColor: '#FF7D3B',
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
   },
@@ -177,5 +232,27 @@ const styles = {
     color: '#fff',
     fontWeight: '700',
     fontSize: 16,
+    marginLeft: 10,
   },
-};
+  btnSecondary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#FF7D3B',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  btnSecondaryText: {
+    color: '#FF7D3B',
+    fontWeight: '600',
+    fontSize: 16,
+    marginLeft: 10,
+  },
+});

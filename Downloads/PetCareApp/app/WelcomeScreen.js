@@ -14,36 +14,34 @@ const ORANGE = '#FF7D3B';
 export default function WelcomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      {/* Seção superior com imagem de fundo */}
-      <ImageBackground
-        source={require('../assets/Lua.png')} // sua imagem de fundo
-        style={styles.topSection}
-        resizeMode="contain"
-      >
-      </ImageBackground>
+      {/* Seção superior com imagem da Lua na divisa */}
+      <View style={styles.topSection}>
+        <ImageBackground
+          source={require('../assets/Lua.png')}
+          style={styles.imageLua}
+          resizeMode="contain"
+        />
+      </View>
 
       {/* Seção inferior branca com botão e textos */}
       <View style={styles.bottomSection}>
-        
         <Text style={styles.title}>Cuide do seu Pet</Text>
         <Text style={styles.subtitle}>
           Fortaleça sua relação entre <Text style={styles.highlight}>pets & humanos</Text>
         </Text>
 
         <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate('Auth', { isLogin: true })}
+          style={styles.button}
+          onPress={() => navigation.navigate('Auth', { isLogin: true })}
         >
-        <FontAwesome
+          <FontAwesome
             name="arrow-right"
             size={20}
             color={ORANGE}
             style={styles.iconLeft}
-        />
-        <Text style={styles.buttonText}>Vamos começar</Text>
+          />
+          <Text style={styles.buttonText}>Vamos começar</Text>
         </TouchableOpacity>
-
-
       </View>
     </View>
   );
@@ -56,16 +54,13 @@ const styles = StyleSheet.create({
   },
   topSection: {
     flex: 1,
-    justifyContent: 'start',
-    alignItems: 'start',
-    padding: 50
+    justifyContent: 'flex-end',  // empurra conteúdo para a base (divisa)
+    alignItems: 'center',         // centraliza horizontalmente
+    // sem padding para não "flutuar"
   },
-
-  logoText: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#fff',
-    borderRadius: 12,
+  imageLua: {
+    width: '80%',      // ajuste conforme a largura desejada
+    height: 250,      // altura fixa para manter consistência em telas diferentes
   },
   bottomSection: {
     flex: 1.2,
@@ -92,8 +87,8 @@ const styles = StyleSheet.create({
     color: ORANGE,
     fontWeight: '600',
   },
-   button: {
-    position: 'relative',      // importante para o filho absoluto
+  button: {
+    position: 'relative',
     backgroundColor: ORANGE,
     paddingVertical: 12,
     paddingHorizontal: 50,
@@ -103,13 +98,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 10,
     elevation: 4,
-
     alignItems: 'center',
-    justifyContent: 'center',  // centraliza o texto no botão
+    justifyContent: 'center',
   },
   iconLeft: {
     position: 'absolute',
-    left: 5,                 // distância da esquerda
+    left: 5,
     backgroundColor: '#fff',
     borderRadius: 50,
     padding: 9,
@@ -121,3 +115,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+

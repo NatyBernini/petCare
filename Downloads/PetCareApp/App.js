@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ImageBackground, Dimensions
+  View, Text, TextInput, Button, StyleSheet, TouchableOpacity, ImageBackground, Dimensions, ScrollView,  KeyboardAvoidingView, Platform
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SHA256 from 'crypto-js/sha256';
@@ -202,111 +202,131 @@ useEffect(() => {
   };
 
   return (
-   <ImageBackground
-      source={require('./assets/fundo.png')}
-      style={[styles.background, { height: windowHeight }]}
-      resizeMode="cover"
-    >
+<KeyboardAvoidingView
+  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+  style={{ flex: 1, backgroundColor: "#fff" }}
+>
+    <ScrollView 
+    showsVerticalScrollIndicator={false}
+    keyboardShouldPersistTaps="handled"
+  >
+<ImageBackground
+  source={require('./assets/background.png')}
+  style={styles.mainContainer}
+  resizeMode="cover"
+>
+  {/* Parte superior branca com curva */}
+  <View style={styles.topContainer}>
+    
+  </View>
 
-      <View style={styles.container}>
-        <View style={styles.card}>
-          <Text style={styles.title}>
-            {recoveryMode ? 'Recuperar Senha' : isLogin ? 'Login' : 'Registro'}
-          </Text>
+  {/* Parte inferior com os campos */}
 
+<View style={styles.scrollContent}>
+  
+    <Text style={styles.topTitle}>
+      {recoveryMode ? 'Recuperar Senha' : isLogin ? 'Login' : 'Registro'}
+    </Text>
+    <View style={styles.card}>
+      <TextInput
+        placeholder="Email"
+        placeholderTextColor="#999"
+        style={styles.input}
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+      />
+
+      {(!isLogin || recoveryMode) && (
+        <TextInput
+          placeholder="Telefone"
+          placeholderTextColor="#999"
+          style={styles.input}
+          value={phone}
+          onChangeText={(text) => setPhone(formatPhone(text))}
+          keyboardType="phone-pad"
+        />
+      )}
+
+      {recoveryMode ? (
+        <>
           <TextInput
-            placeholder="Email"
+            placeholder="Nova Senha"
             placeholderTextColor="#999"
             style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            keyboardType="email-address"
+            value={recoveryPassword}
+            onChangeText={setRecoveryPassword}
+            secureTextEntry
           />
-
-          {(!isLogin || recoveryMode) && (
+          <TextInput
+            placeholder="Confirmar Nova Senha"
+            placeholderTextColor="#999"
+            style={styles.input}
+            value={recoveryConfirmPassword}
+            onChangeText={setRecoveryConfirmPassword}
+            secureTextEntry
+          />
+         
+          <TouchableOpacity style={styles.authButton} onPress={handlePasswordReset}>
+            <Text style={styles.authButtonText}>Redefinir Senha</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => {
+            setRecoveryMode(false);
+            setMessage('');
+          }}>
+            <Text style={styles.toggle}>Voltar para o início</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <TextInput
+            placeholder="Senha"
+            placeholderTextColor="#999"
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          {!isLogin && (
             <TextInput
-              placeholder="Telefone"
+              placeholder="Confirmar Senha"
               placeholderTextColor="#999"
               style={styles.input}
-              value={phone}
-              onChangeText={(text) => setPhone(formatPhone(text))}
-              keyboardType="phone-pad"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
             />
           )}
+          <TouchableOpacity style={styles.authButton} onPress={handleAuth}>
+            <Text style={styles.authButtonText}>{isLogin ? 'Entrar' : 'Registrar'}</Text>
+          </TouchableOpacity>
+        </>
+      )}
 
-          {recoveryMode ? (
-            <>
-              <TextInput
-                placeholder="Nova Senha"
-                placeholderTextColor="#999"
-                style={styles.input}
-                value={recoveryPassword}
-                onChangeText={setRecoveryPassword}
-                secureTextEntry
-              />
-              <TextInput
-                placeholder="Confirmar Nova Senha"
-                placeholderTextColor="#999"
-                style={styles.input}
-                value={recoveryConfirmPassword}
-                onChangeText={setRecoveryConfirmPassword}
-                secureTextEntry
-              />
-              <Button title="Redefinir Senha" onPress={handlePasswordReset} />
-              <TouchableOpacity onPress={() => {
-                setRecoveryMode(false);
-                setMessage('');
-              }}>
-                <Text style={styles.backToHome}>Voltar para o início</Text>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              <TextInput
-                placeholder="Senha"
-                placeholderTextColor="#999"
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-              />
-              {!isLogin && (
-                <TextInput
-                  placeholder="Confirmar Senha"
-                  placeholderTextColor="#999"
-                  style={styles.input}
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  secureTextEntry
-                />
-              )}
-              <TouchableOpacity style={styles.authButton} onPress={handleAuth}>
-                <Text style={styles.authButtonText}>{isLogin ? 'Entrar' : 'Registrar'}</Text>
-              </TouchableOpacity>
-            </>
+      <Text style={styles.message}>{message}</Text>
+
+      {!recoveryMode && (
+        <>
+          <TouchableOpacity onPress={toggleForm}>
+            <Text style={styles.toggle}>
+              {isLogin ? 'Não tem conta? Registre-se' : 'Já tem conta? Login'}
+            </Text>
+          </TouchableOpacity>
+
+          {isLogin && (
+            <TouchableOpacity onPress={handleForgotPassword}>
+              <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
+            </TouchableOpacity>
           )}
+        </>
+      )}
+    </View>
+ </View>
+</ImageBackground>
 
-          <Text style={styles.message}>{message}</Text>
-
-          {!recoveryMode && (
-            <>
-              <TouchableOpacity onPress={toggleForm}>
-                <Text style={styles.toggle}>
-                  {isLogin ? 'Não tem conta? Registre-se' : 'Já tem conta? Login'}
-                </Text>
-              </TouchableOpacity>
-
-              {isLogin && (
-                <TouchableOpacity onPress={handleForgotPassword}>
-                  <Text style={styles.forgotPassword}>Esqueceu a senha?</Text>
-                </TouchableOpacity>
-              )}
-            </>
-          )}
-        </View>
-      </View>
-    </ImageBackground>
+ </ScrollView>
+</KeyboardAvoidingView>
   );
 }
 
@@ -458,47 +478,95 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    flex: 1,
-    justifyContent: 'center',
+ mainContainer: {
+  flex: 1,
+  width: '100%',
+  height: '100%',
+  justifyContent: 'center',
+  alignItems: 'center',
+},
+
+  topContainer: {
+    width: '100%',
+    height: windowHeight * 0.25,
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    paddingBottom: 20,
+  },
+  topTitle: {
+    fontSize: 28,
+    fontFamily: 'Poppins-Bold',
+    color: 'rgb(73, 73, 73)',
+    borderBottomWidth: 2,
+    borderBottomColor: '#FF7D3B',
+    paddingBottom: 4,
+    alignSelf: 'flex-start', // linha acompanha tamanho do texto
+  },
+
+  scrollContent: {
+    width: '100%',
+  paddingBottom: 40,
+  flexGrow: 1,
+  justifyContent: 'center', 
+  backgroundColor: '#fff',
+  borderTopLeftRadius: 0,
+  borderTopRightRadius: 140,
+  padding: 30,
+  paddingTop: 30,
+},
+
+  bottomContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 140,
+    padding: 30,
+    paddingTop: 30
   },
   card: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-    width: '100%',
-    maxWidth: 400,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 25,
+    marginTop: 40,
     elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
   },
-  title: {fontFamily: 'Poppins-Regular', fontSize: 24, marginBottom: 20, textAlign: 'center' },
-  input: {fontFamily: 'Poppins-Regular', borderBottomWidth: 1, marginBottom: 20, padding: 10 },
-  toggle: { fontFamily: 'Poppins-Regular',marginTop: 10, color: '#000', textAlign: 'center' },
-  forgotPassword: {fontFamily: 'Poppins-Regular', marginTop: 10, color: 'tomato', textAlign: 'center' },
-  message: { fontFamily: 'Poppins-Regular',marginTop: 20, color: 'green', fontWeight: 'bold', textAlign: 'center' },
-  backToHome: {    fontFamily: 'Poppins-Regular', marginTop: 15, color: '#007bff', textAlign: 'center', fontWeight: 'bold' },
-  background: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
+  input: {
+    fontFamily: 'Poppins-Regular',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    marginBottom: 20,
+    padding: 8,
   },
   authButton: {
     backgroundColor: '#FF7D3B',
     paddingVertical: 12,
     paddingHorizontal: 25,
-    borderRadius: 20,
+    borderRadius: 30,
     alignItems: 'center',
     marginTop: 10,
-     fontFamily: 'Poppins-Bold'
   },
   authButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontFamily: 'Poppins-Regular'
+    fontFamily: 'Poppins-Bold',
+  },
+  toggle: {
+    fontFamily: 'Poppins-Regular',
+    marginTop: 10,
+    color: '#000',
+    textAlign: 'center',
+  },
+  forgotPassword: {
+    fontFamily: 'Poppins-Regular',
+    marginTop: 10,
+    color: 'tomato',
+    textAlign: 'center',
+  },
+  message: {
+    fontFamily: 'Poppins-Regular',
+    marginTop: 20,
+    color: 'green',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

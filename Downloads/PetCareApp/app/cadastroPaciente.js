@@ -10,15 +10,15 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Componente memoizado para evitar rerenders desnecessários
+// Componente de input com ícone
 const InputWithIcon = React.memo(
   ({ iconName, placeholder, value, onChangeText, keyboardType = 'default' }) => {
     return (
       <View style={styles.inputWrapper}>
-        <FontAwesome5 name={iconName} size={20} color="#007AFF" style={styles.inputIcon} />
+        <FontAwesome5 name={iconName} size={18} color="#FF7D3B" style={styles.inputIcon} />
         <TextInput
           style={styles.input}
           placeholder={placeholder}
@@ -29,7 +29,6 @@ const InputWithIcon = React.memo(
           importantForAutofill="no"
           autoComplete="off"
           textContentType="none"
-          // Mantém o teclado aberto ao tocar fora do input
           blurOnSubmit={false}
           returnKeyType="next"
         />
@@ -48,6 +47,7 @@ export default function CadastroPacienteScreen() {
   const [endereco, setEndereco] = useState('');
   const [pacientes, setPacientes] = useState([]);
 
+  // Carrega pacientes existentes
   useEffect(() => {
     const carregarPacientes = async () => {
       const data = await AsyncStorage.getItem('pacientes');
@@ -56,198 +56,297 @@ export default function CadastroPacienteScreen() {
     carregarPacientes();
   }, []);
 
-  const salvarPacientes = useCallback(
-    async (listaAtualizada) => {
-      await AsyncStorage.setItem('pacientes', JSON.stringify(listaAtualizada));
-    },
-    []
-  );
+  // Salva lista de pacientes
+  const salvarPacientes = useCallback(async (listaAtualizada) => {
+    await AsyncStorage.setItem('pacientes', JSON.stringify(listaAtualizada));
+  }, []);
 
+  // Cadastra novo paciente
   const handleCadastro = async () => {
     if (!nome || !raca || !sexo || !idade || !pelagem || !nomeTutor || !endereco) {
-      Alert.alert('Erro', 'Preencha todos os campos!');
+      Alert.alert('Atenção', 'Por favor, preencha todos os campos!');
       return;
     }
 
-    const novoPaciente = { nome, raca, sexo, idade, pelagem, nomeTutor, endereco };
-    const listaAtualizada = [...pacientes, novoPaciente];
+    const novoPaciente = { 
+      nome, 
+      raca, 
+      sexo, 
+      idade, 
+      pelagem, 
+      nomeTutor, 
+      endereco 
+    };
 
-    setPacientes(listaAtualizada);
-    await salvarPacientes(listaAtualizada);
-
-    Alert.alert('Sucesso', 'Paciente cadastrado com sucesso!');
-    setNome('');
-    setRaca('');
-    setSexo('');
-    setIdade('');
-    setPelagem('');
-    setNomeTutor('');
-    setEndereco('');
+    try {
+      const listaAtualizada = [...pacientes, novoPaciente];
+      setPacientes(listaAtualizada);
+      await salvarPacientes(listaAtualizada);
+      
+      Alert.alert('Sucesso', 'Paciente cadastrado com sucesso!');
+      
+      // Limpa os campos
+      setNome('');
+      setRaca('');
+      setSexo('');
+      setIdade('');
+      setPelagem('');
+      setNomeTutor('');
+      setEndereco('');
+    } catch (error) {
+      Alert.alert('Erro', 'Ocorreu um erro ao salvar o paciente');
+    }
   };
 
+  // Limpa todos os pacientes
   const handleLimparPacientes = () => {
     Alert.alert(
       'Confirmar exclusão',
-      'Deseja realmente apagar todos os pacientes e consultas?',
+      'Deseja realmente apagar todos os pacientes cadastrados?',
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { 
+          text: 'Cancelar', 
+          style: 'cancel' 
+        },
         {
-          text: 'Sim, apagar',
+          text: 'Confirmar',
           onPress: async () => {
-            await AsyncStorage.removeItem('pacientes');
-            await AsyncStorage.removeItem('consultas');
-            setPacientes([]);
-            Alert.alert('Lista zerada', 'Todos os pacientes e consultas foram apagados.');
+            try {
+              await AsyncStorage.removeItem('pacientes');
+              setPacientes([]);
+              Alert.alert('Sucesso', 'Todos os pacientes foram removidos');
+            } catch (error) {
+              Alert.alert('Erro', 'Não foi possível limpar os dados');
+            }
           },
         },
       ]
     );
   };
 
- return (
-  <KeyboardAvoidingView
-    style={{ flex: 1 }}
-    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    keyboardVerticalOffset={100} // ajuste se necessário
-  >
-    <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <Text style={styles.titulo}>Cadastro de Paciente (Animal)</Text>
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+    >
+      <ScrollView 
+        contentContainerStyle={styles.container} 
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Cabeçalho */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Cadastro de Paciente</Text>
+          <Feather name="plus-circle" size={24} color="#fff" />
+        </View>
 
-      <InputWithIcon iconName="dog" placeholder="Nome" value={nome} onChangeText={setNome} />
-      <InputWithIcon iconName="paw" placeholder="Raça" value={raca} onChangeText={setRaca} />
+        {/* Formulário */}
+        <View style={styles.formContainer}>
+          {/* Informações do Animal */}
+          <Text style={styles.sectionTitle}>Informações do Animal</Text>
+          
+          <InputWithIcon 
+            iconName="dog" 
+            placeholder="Nome do Animal" 
+            value={nome} 
+            onChangeText={setNome} 
+          />
+          
+          <InputWithIcon 
+            iconName="paw" 
+            placeholder="Raça" 
+            value={raca} 
+            onChangeText={setRaca} 
+          />
 
-      <Text style={styles.label}>Sexo:</Text>
-      <View style={styles.radioContainer}>
-        <TouchableOpacity
-          style={[styles.radioButton, sexo === 'Macho' && styles.radioSelected]}
-          onPress={() => setSexo('Macho')}
-        >
-          <Text style={[styles.radioText, sexo === 'Macho' && styles.radioTextSelected]}>Macho</Text>
-        </TouchableOpacity>
+          <Text style={styles.label}>Sexo:</Text>
+          <View style={styles.radioContainer}>
+            <TouchableOpacity
+              style={[styles.radioButton, sexo === 'Macho' && styles.radioSelected]}
+              onPress={() => setSexo('Macho')}
+            >
+              <FontAwesome5 name="mars" size={16} color={sexo === 'Macho' ? '#fff' : '#FF7D3B'} />
+              <Text style={[styles.radioText, sexo === 'Macho' && styles.radioTextSelected]}> Macho</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.radioButton, sexo === 'Fêmea' && styles.radioSelected]}
-          onPress={() => setSexo('Fêmea')}
-        >
-          <Text style={[styles.radioText, sexo === 'Fêmea' && styles.radioTextSelected]}>Fêmea</Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity
+              style={[styles.radioButton, sexo === 'Fêmea' && styles.radioSelected]}
+              onPress={() => setSexo('Fêmea')}
+            >
+              <FontAwesome5 name="venus" size={16} color={sexo === 'Fêmea' ? '#fff' : '#FF7D3B'} />
+              <Text style={[styles.radioText, sexo === 'Fêmea' && styles.radioTextSelected]}> Fêmea</Text>
+            </TouchableOpacity>
+          </View>
 
-      <InputWithIcon
-        iconName="sort-numeric-up"
-        placeholder="Idade"
-        value={idade}
-        onChangeText={setIdade}
-        keyboardType="numeric"
-      />
-      <InputWithIcon iconName="palette" placeholder="Pelagem" value={pelagem} onChangeText={setPelagem} />
-      <InputWithIcon iconName="user" placeholder="Nome do Tutor" value={nomeTutor} onChangeText={setNomeTutor} />
-      <InputWithIcon
-        iconName="map-marker-alt"
-        placeholder="Endereço"
-        value={endereco}
-        onChangeText={setEndereco}
-      />
+          <InputWithIcon
+            iconName="sort-numeric-up"
+            placeholder="Idade"
+            value={idade}
+            onChangeText={setIdade}
+            keyboardType="numeric"
+          />
+          
+          <InputWithIcon 
+            iconName="palette" 
+            placeholder="Pelagem" 
+            value={pelagem} 
+            onChangeText={setPelagem} 
+          />
 
-      <TouchableOpacity style={styles.btnPrimary} onPress={handleCadastro}>
-        <Text style={styles.btnText}>Cadastrar Paciente</Text>
-      </TouchableOpacity>
+          {/* Informações do Tutor */}
+          <Text style={styles.sectionTitle}>Informações do Tutor</Text>
+          
+          <InputWithIcon 
+            iconName="user" 
+            placeholder="Nome do Tutor" 
+            value={nomeTutor} 
+            onChangeText={setNomeTutor} 
+          />
+          
+          <InputWithIcon
+            iconName="map-marker-alt"
+            placeholder="Endereço"
+            value={endereco}
+            onChangeText={setEndereco}
+          />
 
-      <TouchableOpacity style={styles.btnDanger} onPress={handleLimparPacientes}>
-        <Text style={styles.btnText}>Limpar todos os pacientes</Text>
-      </TouchableOpacity>
-    </ScrollView>
-  </KeyboardAvoidingView>
-);
+          {/* Botões de Ação */}
+          <TouchableOpacity 
+            style={styles.btnPrimary} 
+            onPress={handleCadastro}
+            activeOpacity={0.8}
+          >
+            <FontAwesome5 name="save" size={18} color="#fff" />
+            <Text style={styles.btnText}> Cadastrar Paciente</Text>
+          </TouchableOpacity>
 
+          <TouchableOpacity 
+            style={styles.btnSecondary} 
+            onPress={handleLimparPacientes}
+            activeOpacity={0.8}
+          >
+            <Feather name="trash-2" size={18} color="#FF7D3B" />
+            <Text style={styles.btnSecondaryText}> Limpar Todos</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 25,
-    paddingTop: 50,
-    paddingBottom: 100,
-    backgroundColor: '#f9faff',
     flexGrow: 1,
+    backgroundColor: '#f9f9f9',
+    paddingBottom: 100
   },
-  titulo: {
-    fontSize: 24,
-    marginBottom: 30,
-    textAlign: 'center',
-    fontWeight: '700',
-    color: '#333',
+  header: {
+    backgroundColor: 'rgb(255, 145, 0)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 40,
+    paddingVertical: 20,
+    paddingHorizontal: 25,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
-  label: {
+  headerTitle: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  formContainer: {
+    padding: 25,
+    paddingTop: 30,
+  },
+  sectionTitle: {
     fontSize: 16,
-    marginBottom: 10,
     fontWeight: '600',
     color: '#555',
+    marginBottom: 15,
+    marginTop: 10,
+    paddingLeft: 10,
+    borderLeftWidth: 3,
+    borderLeftColor: '#FF7D3B',
+  },
+  label: {
+    fontSize: 15,
+    marginBottom: 10,
+    fontWeight: '500',
+    color: '#555',
+    paddingLeft: 5,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 12,
-    paddingHorizontal: 15,
-    marginBottom: 18,
-    elevation: 3,
+    paddingHorizontal: 18,
+    marginBottom: 20,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
   inputIcon: {
     marginRight: 12,
   },
   input: {
     flex: 1,
-    height: 45,
+    height: 50,
     fontSize: 16,
     color: '#333',
   },
   radioContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginBottom: 20,
   },
   radioButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 30,
+    paddingHorizontal: 25,
     borderRadius: 25,
-    borderWidth: 1,
-    borderColor: '#007AFF',
+    borderWidth: 1.5,
+    borderColor: '#FF7D3B',
     backgroundColor: '#fff',
+    width: '48%',
+    justifyContent: 'center',
   },
   radioSelected: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#FF7D3B',
   },
   radioText: {
-    color: '#007AFF',
+    color: '#FF7D3B',
     fontWeight: '600',
+    fontSize: 15,
   },
   radioTextSelected: {
     color: '#fff',
   },
   btnPrimary: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 15,
-    borderRadius: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FF7D3B',
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginTop: 25,
     marginBottom: 15,
-    alignItems: 'center',
     elevation: 3,
-    shadowColor: '#007AFF',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-  },
-  btnDanger: {
-    backgroundColor: '#ff4d4d',
-    paddingVertical: 15,
-    borderRadius: 30,
-    alignItems: 'center',
-    elevation: 3,
-    shadowColor: '#ff4d4d',
-    shadowOffset: { width: 0, height: 5 },
+    shadowColor: '#FF7D3B',
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
   },
@@ -255,5 +354,27 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '700',
     fontSize: 16,
+    marginLeft: 10,
+  },
+  btnSecondary: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 16,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#FF7D3B',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  btnSecondaryText: {
+    color: '#FF7D3B',
+    fontWeight: '600',
+    fontSize: 16,
+    marginLeft: 10,
   },
 });
