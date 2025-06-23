@@ -11,9 +11,8 @@ Este é um aplicativo de autenticação simples feito com **React Native** usand
 - Cadastro de pacientes , veterinários e agendamento de consulta.
 
 - Link do Projeto no Expo Go: [projeto](https://snack.expo.dev/@ailatan/pet-care)
-- Link do Manual do Usuário: [manualUsuario](https://www.canva.com/design/DAGrMe5AaPs/nzfVtGUcpxYvLjZ4LhM16w/view?utm_content=DAGrMe5AaPs&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hf46755cb7b)
-
-[manual_usuario.pdf](https://github.com/user-attachments/files/20872494/Cartao.de.visita.para.Medica.veterinaria.ilustrado.minimalista.verde.azul.pdf)
+- Link do Manual do Usuário pelo Canva: [manualUsuario](https://www.canva.com/design/DAGrMe5AaPs/nzfVtGUcpxYvLjZ4LhM16w/view?utm_content=DAGrMe5AaPs&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hf46755cb7b)
+- Link do Manual do Usuário em PDF: [manual_usuario.pdf](https://github.com/user-attachments/files/20872494/Cartao.de.visita.para.Medica.veterinaria.ilustrado.minimalista.verde.azul.pdf)
 
 ---
 
@@ -174,30 +173,16 @@ Neste projeto, foi utilizado o @react-native-async-storage/async-storage porque:
 
 
 ## 📸 Capturas de Tela
+![Tela-Inicial](https://github.com/user-attachments/assets/9dbae216-5aec-41e3-920e-40c2265e1852)
+![Tela-Login](https://github.com/user-attachments/assets/a6aabcb7-bf45-48d9-bc53-2983cf0c0cdb)
+![Tela-Registrar](https://github.com/user-attachments/assets/ba49e1c5-f6b8-4063-bc6d-1a024785b3fd)
+![Tela-Recuperar-Senha](https://github.com/user-attachments/assets/455b2517-1df5-48ff-b25e-9dd71250e713)
+![Tela-Funcionalidades](https://github.com/user-attachments/assets/a12e41d4-b939-4847-9cbf-3103d48f53f4)
+![Tela-Dashboard](https://github.com/user-attachments/assets/98178653-7aa8-4da3-8e55-6daff8b91c8e)
+![Tela-Cadastro-Paciente](https://github.com/user-attachments/assets/73876146-7c75-4162-aa08-4d6e721ec834)
+![Tela-Detalhamento-Paciente](https://github.com/user-attachments/assets/b4951f2a-e625-4ad8-92e7-cb19ad312e2a)
+![Tela-Perfil](https://github.com/user-attachments/assets/b6439fd4-3208-4e98-a64d-3b2d650e32a5)
 
-**Perfil Usuario** | **Petcare Dasbord** | **Tela Inicial** | 
-:--:|:--:|:--:|
-![PerfilUsuario](https://github.com/user-attachments/assets/c04294bd-b246-4e64-8c00-53d1af554e34)|![Petcare Dashbord](https://github.com/user-attachments/assets/e335dfbe-9e2b-448f-8e7e-b64093b2d976)|![TelaInicial](https://github.com/user-attachments/assets/30c8f09d-1b40-48df-82f8-34d904ca9135)
-
-
-   
-**Cadastro Paciente** | **Cadastro Veterinario** | 
-:--:|:--:|
-![CadstroPaciente](https://github.com/user-attachments/assets/63be1347-a4dc-4c1d-a26b-156de9c1907b)|![Cadastroveterinario](https://github.com/user-attachments/assets/dabc0ef3-9774-4fea-ab32-40387a53bbf9)
-
-
-
-
-
-**Historico Consulta Paciente** | **Historico Consulta Veterinario** | **Historico** |
-:--:|:--:|--:
-![HistoricoConsulta-Paciente](https://github.com/user-attachments/assets/9bfc3cda-f99a-4c23-a350-c55cdf19829d)|![HistoricoConsulta-veterinario](https://github.com/user-attachments/assets/582fd627-8243-4a7c-8f82-db1a45a90c0c)|![HistoricoConsulta](https://github.com/user-attachments/assets/cbd22999-59b6-4a19-b61f-430e15b48161)
-
-
-
-**Agendar Consulta** | **Realizar consulta** |
-:--:|--:
-![AgendaConsulta](https://github.com/user-attachments/assets/82e1e890-0796-4e20-aaca-7da63afee0ff)|![RealizarConsulta](https://github.com/user-attachments/assets/73a73ed1-1b28-401f-9881-4f763de2d146)
 
 
 ---
