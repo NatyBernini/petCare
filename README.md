@@ -11,6 +11,7 @@ Este é um aplicativo de autenticação simples feito com **React Native** usand
 - Cadastro de pacientes , veterinários e agendamento de consulta.
 
 - Link do Projeto no Expo Go: [projeto](https://snack.expo.dev/@ailatan/pet-care)
+- Link do Manual do Usuário: [manualUsuario](https://www.canva.com/design/DAGrMe5AaPs/nzfVtGUcpxYvLjZ4LhM16w/view?utm_content=DAGrMe5AaPs&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hf46755cb7b)
 
 ---
 
