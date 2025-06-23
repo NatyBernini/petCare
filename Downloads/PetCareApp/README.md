@@ -218,6 +218,11 @@ Neste projeto, foi utilizado o @react-native-async-storage/async-storage porque:
 npm install
 ```
 
+### 3. Inicializando o Projeto
+```bash
+npx expo start
+```
+
 ---
 ## ✅ Testando os Recursos
 
