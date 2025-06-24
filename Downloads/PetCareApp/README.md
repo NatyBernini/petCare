@@ -1,18 +1,19 @@
 # 📱 App PetCare com React Native (Expo)
 
-Este é um aplicativo de autenticação simples feito com **React Native** usando **Expo**, que permite:
+Aplicativo desenvolvido através de React Native para otimizar o atendimento em clínicas veterinárias.
 
-- Registro de usuários com **e-mail**, **telefone** (com máscara brasileira) e **senha**.
+## Funcionalidades
+- Registro de usuários com **e-mail**, **telefone** e **senha**.
 - Login com e-mail e senha.
 - Recuperação de senha com base no e-mail e telefone.
 - Armazenamento local usando **AsyncStorage**.
 - Criptografia de senhas com **SHA-256** via `crypto-js`.
-- Validações de entrada (e-mail, senha forte, confirmação de senha e DDD brasileiro).2
-- Cadastro de pacientes , veterinários e agendamento de consulta.
+- Cadastro de pacientes , veterinários e agendamento/realização de consulta.
 
-- Link do Projeto no Expo Go: [projeto](https://snack.expo.dev/@ailatan/pet-care)
-- Link do Manual do Usuário pelo Canva: [manualUsuario](https://www.canva.com/design/DAGrMe5AaPs/nzfVtGUcpxYvLjZ4LhM16w/view?utm_content=DAGrMe5AaPs&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hf46755cb7b)
-- Link do Manual do Usuário em PDF: [manual_usuario.pdf](https://github.com/user-attachments/files/20872494/Cartao.de.visita.para.Medica.veterinaria.ilustrado.minimalista.verde.azul.pdf)
+## Links do Projeto
+- Projeto no Expo Go: [projeto](https://snack.expo.dev/@ailatan/pet-care)
+- Manual do Usuário pelo Canva: [manualUsuario](https://www.canva.com/design/DAGrMe5AaPs/nzfVtGUcpxYvLjZ4LhM16w/view?utm_content=DAGrMe5AaPs&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hf46755cb7b)
+- Manual do Usuário em PDF: [manual_usuario.pdf](https://github.com/user-attachments/files/20872494/Cartao.de.visita.para.Medica.veterinaria.ilustrado.minimalista.verde.azul.pdf)
 
 ---
 
@@ -44,87 +45,6 @@ Utiliza AsyncStorage para armazenar dados localmente no dispositivo, garantindo 
 - Armazenamento local das informações da consulta.
 - Consulta e listagem das consultas agendadas com persistência.
 
-
-
-
-### Carregamento inicial dos dados salvos
-Logo quando o componente é montado (useEffect), ele tenta carregar os dados salvos anteriormente:
-```useEffect(() => {
-  const carregarPacientes = async () => {
-    const data = await AsyncStorage.getItem('pacientes');
-    if (data) setPacientes(JSON.parse(data));
-  };
-  carregarPacientes();
-}, []);
-```
-- AsyncStorage.getItem('pacientes'): busca os dados salvos sob a chave 'pacientes'.
-
-- Se encontrar algo, ele converte de volta de JSON para objeto JavaScript e atualiza o estado com setPacientes.
-
-### Salvando dados ao cadastrar um paciente
-Quando o usuário preenche o formulário e clica em "Cadastrar Paciente", a função handleCadastro é chamada:
-```const handleCadastro = async () => {
-  if (!nome || !raca || !sexo || !idade || !pelagem || !nomeTutor || !endereco) {
-    Alert.alert('Erro', 'Preencha todos os campos!');
-    return;
-  }
-
-  const novoPaciente = { nome, raca, sexo, idade, pelagem, nomeTutor, endereco };
-  const listaAtualizada = [...pacientes, novoPaciente];
-
-  setPacientes(listaAtualizada);
-  await salvarPacientes(listaAtualizada);
-```
-
-- Cria um objeto novoPaciente com os dados do formulário.
-
-- Cria uma nova lista com os pacientes antigos + o novo.
-
-- Atualiza o estado local (setPacientes) e também salva essa lista no armazenamento com AsyncStorage.setItem por meio da função salvarPacientes:
-
- ``` const salvarPacientes = useCallback(
-  async (listaAtualizada) => {
-    await AsyncStorage.setItem('pacientes', JSON.stringify(listaAtualizada));
-  },
-  []
-);
-```
-⚠️ É necessário serializar com JSON.stringify() porque AsyncStorage só salva strings.
-
-### Limpando os dados salvos
-Quando o usuário clica em "Limpar todos os pacientes", esta função é executada:
-```const handleLimparPacientes = () => {
-  Alert.alert(
-    'Confirmar exclusão',
-    'Deseja realmente apagar todos os pacientes e consultas?',
-    [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Sim, apagar',
-        onPress: async () => {
-          await AsyncStorage.removeItem('pacientes');
-          await AsyncStorage.removeItem('consultas');
-          setPacientes([]);
-          Alert.alert('Lista zerada', 'Todos os pacientes e consultas foram apagados.');
-        },
-      },
-    ]
-  );
-};
-```
-- Remove as chaves 'pacientes' e 'consultas' de forma permanente.
-
-- Limpa a lista de pacientes em memória (setPacientes([])).
-
-### Ciclo da Persistência
-| Ação                      | Função usada                | Local afetado         |
-| ------------------------- | --------------------------- | --------------------- |
-| Carregar dados salvos     | `AsyncStorage.getItem()`    | Estado inicial do app |
-| Salvar novo paciente      | `AsyncStorage.setItem()`    | Armazenamento local   |
-| Apagar todos os pacientes | `AsyncStorage.removeItem()` | Armazenamento local   |
-
-
-- Obs: o mesmo ciclo se aplica para as outras funcionalidades como cadastrar veterinários e realizar consultas.
 ---
 
 ## 🚀 Tecnologias Utilizadas
@@ -133,44 +53,8 @@ Quando o usuário clica em "Limpar todos os pacientes", esta função é executa
 - [Expo](https://expo.dev/)
 - [React Navigation](https://reactnavigation.org/)
 - [crypto-js](https://www.npmjs.com/package/crypto-js)
-
- ## 🚀 Tecnologias Utilizadas Para Persistencia
- 
-  - [AsyncStorage](https://react-native-async-storage.github.io/async-storage/)
-    
-Foi utilizado por permitir o armazenamento local de dados de forma persistente, mesmo após o app ser fechado, garantindo melhor experiência ao usuário.
-Além disso, destaca-se por sua simplicidade de uso.
-
-
-## 📦 Por que usar AsyncStorage em vez de expo-sqlite ou MMKV?
-| Tecnologia       | Ideal para...                                   | Prós                                       | Contras                                            |
-| ---------------- | ----------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
-| **AsyncStorage** | Dados simples e persistência básica             | Simples, compatível com Expo Go            | Lento para grandes volumes, não relacional         |
-| **Expo SQLite**  | Dados estruturados, relacionais e consultas SQL | Suporte a SQL, ideal para muitos dados     | Mais verboso, exige mais configuração e manutenção |
-| **MMKV**         | Armazenamento de alta performance (key-value)   | Extremamente rápido, persistência imediata | Não compatível com Expo Go (exige eject)           |
-
-✅ Quando usar cada um?
-| Caso de Uso                             | Melhor Opção             |
-| --------------------------------------- | ------------------------ |
-| Salvar token de autenticação            | `MMKV` ou `SecureStore`  |
-| Armazenar lista simples (ex: pacientes) | `AsyncStorage` ou `MMKV` |
-| Persistir grande volume de dados        | `SQLite`, `Realm`, etc.  |
-| App com busca, filtros, ordenações      | `SQLite`                 |
-| Configurações, flags, status do app     | `MMKV` ou `AsyncStorage` |
-
-🚀 Por que escolhemos AsyncStorage?
-Neste projeto, foi utilizado o @react-native-async-storage/async-storage porque:
-
-- A estrutura de dados é simples (lista de pacientes).
-
-- Não há necessidade de consultas complexas ou relacionamentos entre dados.
-
-- É fácil de implementar e compatível com o Expo Go (sem necessidade de eject).
-
-- Boa escolha para persistência local leve.
-
-
-
+- [AsyncStorage](https://reactnative.dev/docs/asyncstorage)
+- [FontAwesome](https://fontawesome.com)
 
 ## 📸 Capturas de Tela
 ![Tela-Inicial](https://github.com/user-attachments/assets/9dbae216-5aec-41e3-920e-40c2265e1852)
@@ -193,7 +77,8 @@ Neste projeto, foi utilizado o @react-native-async-storage/async-storage porque:
 - Node.js
 - Expo CLI 
 - Dispositivo físico ou emulador Android/iOS
-- Editor de código (VS Code recomendado)
+- Editor de código (VSCode recomendado)
+[VSCode-Link](https://code.visualstudio.com)
 
 - Instale o Expo:
   ```base
@@ -240,6 +125,10 @@ npx expo start
 - Acesse as telas de consulta
 - Verifique se os registros anteriores aparecem corretamente
 - Teste reiniciando o app para validar a persistência
+
+Obs: Caso esse passo a passo gere algumas dúvidas, disponibilizamos um manual com prints das telas do sistema.
+- Manual do Usuário pelo Canva: [manualUsuario](https://www.canva.com/design/DAGrMe5AaPs/nzfVtGUcpxYvLjZ4LhM16w/view?utm_content=DAGrMe5AaPs&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hf46755cb7b)
+- Manual do Usuário em PDF: [manual_usuario.pdf](https://github.com/user-attachments/files/20872494/Cartao.de.visita.para.Medica.veterinaria.ilustrado.minimalista.verde.azul.pdf)
 
 ---
 
